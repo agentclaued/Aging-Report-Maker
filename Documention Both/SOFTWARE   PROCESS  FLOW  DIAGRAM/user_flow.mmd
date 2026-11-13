@@ -1,0 +1,33 @@
+flowchart TD
+    A([Start]) --> B[User opens Overstock web app]
+    B --> C[User views processing dashboard]
+    C --> D[User selects a process step]
+    D --> E{Which step?}
+
+    E -->|Step 01| F[Upload inquiry file]
+    E -->|SQL / summary step| I[Click process action]
+
+    F --> J[User submits selected file]
+    I --> N[User waits for result]
+
+    J --> K{File selected and supported?}
+    K -->|No| L[User sees validation error message]
+    L --> M[User corrects file choice and retries]
+    M --> D
+    K -->|Yes| N[User waits for result]
+
+    N --> T[Processing resumes]
+
+    T --> U{Did processing succeed?}
+    U -->|Yes| V[User sees success message and updated status]
+    U -->|No| W[User sees failure message]
+
+    V --> X{Is an output file available?}
+    X -->|Yes| Y[User downloads generated output file]
+    X -->|No| Z[User returns to dashboard for next step]
+    Y --> Z
+
+    W --> AA{Retry or adjust input?}
+    AA -->|Retry| D
+    AA -->|Stop| AB([End])
+    Z --> AB

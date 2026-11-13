@@ -1,0 +1,16 @@
+{
+  "sheet_aliases": {
+    "farooq": ["Farooq"],
+    "po_details": ["Yasar AR"]
+  },
+  "skiprows": {
+    "farooq": 2
+  },
+  "farooq_column_aliases": {},
+  "po_details_column_aliases": {},
+  "required_columns": {
+    "po_details": ["retail_order", "quantity", "cost"]
+  }
+}
+
+

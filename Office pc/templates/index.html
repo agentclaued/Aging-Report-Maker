@@ -1,0 +1,2393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wal Mart Status Summary</title>
+    <style>
+
+           .hidden-section {
+    display: none;
+}
+
+
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #222;
+        }
+
+        .page {
+            box-sizing: border-box;
+            width: min(640px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 0 0 32px;
+            background: transparent;
+            border: 0;
+        }
+
+        .page-layout {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .main-content {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .side-panel {
+            width: 320px;
+            flex: 0 0 320px;
+        }
+
+        h1, h2 {
+            margin-top: 0;
+        }
+
+        p {
+            line-height: 1.5;
+        }
+
+        .step-box {
+            position: relative;
+            margin-top: 24px;
+            padding-top: 2px;
+            border-top: 1px solid #ddd;
+        }
+
+        .workflow-intro {
+            margin-bottom: 24px;
+        }
+
+        .workflow-intro-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .workflow-intro-head p {
+            margin: 0;
+        }
+
+        .workflow-intro-details {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 6px 14px;
+            align-items: start;
+        }
+
+        .workflow-intro-details strong,
+        .workflow-intro-details span {
+            margin: 0;
+        }
+
+        .workflow-intro-company-code {
+            padding: 2px 8px;
+            border: 1px solid #d6d6d6;
+            background: #fafafa;
+        }
+
+        .workflow-intro-batch {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 5px;
+            margin-top: 24px;
+        }
+
+        .files-uploader-box {
+            border: 1px solid #e2e2e2;
+            background: #f1eeee;
+            padding: 12px 38px 14px;
+        }
+
+        .customer-selector-box {
+            margin-bottom: 22px;
+            border: 1px solid #e2e2e2;
+            background: #f1eeee;
+            padding: 12px;
+        }
+
+        .customer-selector-box label {
+            display: block;
+            margin-top: 20px;
+            color: #4f4f4f;
+            font-size: 13px;
+        }
+
+        .customer-selector-box select {
+            display: block;
+            width: 100%;
+            min-height: 40px;
+            margin-top: 5px;
+            padding: 7px 12px;
+            border: 2px solid #fa331d;
+            background: #fff;
+            font-size: 14px;
+        }
+
+        .customer-selection-status,
+        .inquiry-file-status {
+            display: block;
+            margin: 10px 0 0;
+            padding: 4px 7px;
+            background: #fff4f2;
+            color: #d33220;
+            font-size: 11px;
+        }
+
+        .report-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 16px;
+            padding: 20px 0;
+            border-top: 1px solid #999;
+            border-bottom: 1px solid #999;
+        }
+
+        .report-summary h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .report-summary-status {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 4px 8px;
+            background: #fff4f2;
+            color: #d33220;
+            font-size: 11px;
+            font-weight: 400;
+            vertical-align: middle;
+        }
+
+        .report-summary-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .report-summary-actions button {
+            background: #fa331d;
+            border-radius: 0;
+            font-weight: 700;
+        }
+
+        .report-summary-actions .process-another-file {
+            border: 0;
+            background: transparent;
+            color: #fa331d;
+            padding: 8px 0;
+        }
+
+        .program-bar {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            padding: 3px 14px 4px;
+            box-sizing: border-box;
+            border-bottom: 1px solid #aaa;
+            color: #222;
+        }
+
+        .program-bar strong {
+            font-size: 14px;
+        }
+
+        .program-bar span {
+            color: #555;
+            font-size: 11px;
+        }
+
+        .workflow-intro {
+            margin-top: 16px;
+        }
+
+        .workflow-intro h1 {
+            margin-bottom: 0;
+            font-size: 26px;
+        }
+
+        .workflow-intro-subtitle {
+            margin: 6px 0 28px;
+            color: #5b5b5b;
+        }
+
+        .upload-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .upload-step-badge {
+            display: inline-grid;
+            width: 28px;
+            height: 28px;
+            place-items: center;
+            background: #fa331d;
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .files-uploader-box h2 {
+            margin: 0;
+            font-size: 19px;
+        }
+
+        .upload-panel-description {
+            margin: 16px 0 24px;
+            color: #4f4f4f;
+        }
+
+        .files-uploader-box .grid {
+            display: block;
+            margin-top: 0;
+        }
+
+        .files-uploader-box .workflow-card {
+            padding: 0;
+            border: 0;
+            background: transparent;
+        }
+
+        .files-uploader-box .workflow-card > h2,
+        .files-uploader-box .workflow-card-info {
+            display: none;
+        }
+
+        .files-uploader-box .step-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0;
+        }
+
+        .files-uploader-box .step-actions label {
+            display: block;
+            width: 100%;
+            color: #4f4f4f;
+            font-size: 13px;
+        }
+
+        .files-uploader-box .step-actions small {
+            display: inline;
+            margin-left: 4px;
+        }
+
+        .files-uploader-box input[type="file"] {
+            min-height: 36px;
+            margin-top: 7px;
+            padding: 4px 8px;
+            border: 1px solid #aaa;
+            background: #fff;
+            box-sizing: border-box;
+        }
+
+        .files-uploader-box .step-actions button {
+            width: auto;
+            margin-top: 0;
+            padding: 9px 15px;
+            align-self: flex-start;
+            border-radius: 0;
+            background: #ef9388;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .files-uploader-box .download-button {
+            width: auto;
+            margin-top: 10px;
+            align-self: flex-start;
+        }
+
+        .gen-control-sheets-box {
+            position: relative;
+            border: 1px solid #ddd;
+            background: #fff;
+            padding: 18px;
+            margin-top: 18px;
+        }
+
+        .gen-control-sheets-box h2 {
+            margin: 0 0 12px;
+        }
+
+        .workflow-tools-expand {
+            margin-top: 18px;
+        }
+
+        .workflow-tools-expand > summary {
+            display: inline-flex;
+            align-items: center;
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 6px;
+            background: #1f4e79;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 700;
+            list-style: none;
+        }
+
+        .workflow-tools-expand > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .workflow-tools-expand > summary::before {
+            content: "+";
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .workflow-tools-expand[open] > summary::before {
+            content: "−";
+        }
+
+        .workflow-tools-expand-content {
+            padding-top: 1px;
+        }
+
+        .invoice-number-box {
+            position: relative;
+            border: 1px solid #ddd;
+            background: #fff;
+            padding: 18px;
+            margin-top: 18px;
+        }
+
+        .invoice-number-box h2 {
+            margin: 0 0 12px;
+        }
+
+        .workflow-card {
+            position: relative;
+            padding: 18px;
+            border: 1px solid #d6d6d6;
+            background: #fafafa;
+        }
+
+        .workflow-card-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: #222;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: default;
+        }
+
+        .workflow-card-info-tooltip {
+            position: absolute;
+            top: 32px;
+            right: 0;
+            width: 250px;
+            padding: 10px 12px;
+            background: #222;
+            color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            font-size: 12px;
+            line-height: 1.4;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(4px);
+            transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+            z-index: 20;
+        }
+
+        .workflow-card-info:hover .workflow-card-info-tooltip,
+        .workflow-card-info:focus-within .workflow-card-info-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .workflow-card h2 {
+            margin-bottom: 12px;
+            font-size: 22px;
+        }
+
+        .workflow-card p {
+            margin: 0 0 16px;
+        }
+
+        .workflow-card .step-actions {
+            align-items: stretch;
+        }
+
+        .workflow-card .step-actions > * {
+            flex: 1 1 100%;
+        }
+
+        .step-action-tooltip-wrap {
+            position: relative;
+        }
+
+        .step-action-tooltip {
+            position: absolute;
+            left: calc(100% + 8px);
+            top: 50%;
+            width: 240px;
+            padding: 10px 12px;
+            background: #222;
+            color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            font-size: 12px;
+            line-height: 1.4;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-50%);
+            transition: opacity 0.15s ease, visibility 0.15s ease;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .step-action-tooltip-wrap:hover .step-action-tooltip,
+        .step-action-tooltip-wrap:focus-within .step-action-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .workflow-card .step-actions button,
+        .workflow-card .step-actions .download-button {
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        .workflow-card .download-button {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 16px;
+            font-weight: 700;
+            flex: 1 1 420px;
+        }
+
+        small {
+            font-weight: 400;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        button,
+        .download-button {
+            display: inline-block;
+            padding: 10px 14px;
+            background: #222;
+            color: #fff;
+            border: 0;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .step-actions {
+            display: flex;
+            gap: 12px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .step-06-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            align-items: stretch;
+            margin-top: 12px;
+        }
+
+        .step-06-column {
+            border: 1px solid #ddd;
+            padding: 12px;
+            background: #fafafa;
+        }
+
+        .step-06-danger-zone {
+            border-color: #b00020;
+            background: #fff5f5;
+        }
+
+        .step-06-danger-zone h3 {
+            color: #b00020;
+        }
+
+        .step-06-column h3 {
+            margin: 0 0 12px;
+            font-size: 14px;
+            line-height: 1.35;
+        }
+
+        .step-06-column button {
+            width: 100%;
+            margin-top: 8px;
+            text-align: left;
+        }
+
+        .step-07a-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            align-items: stretch;
+            margin-top: 12px;
+        }
+
+        .step-07a-grid button {
+            width: 100%;
+            height: 100%;
+            min-height: 48px;
+            text-align: left;
+        }
+
+        @media (max-width: 900px) {
+            .step-06-grid,
+            .step-07a-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            .step-06-grid,
+            .step-07a-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 1080px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .links {
+            margin-top: 16px;
+        }
+
+        .links a {
+            margin-right: 12px;
+            color: #222;
+        }
+
+        .warning {
+            margin-top: 12px;
+            padding: 12px;
+            background: #fff3cd;
+            border-left: 4px solid #c98a00;
+            color: #6b4f00;
+        }
+        .terminal-panel {
+            margin-top: 24px;
+            padding: 16px 18px;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            background: #111827;
+            color: #d1d5db;
+            font-family: Consolas, "Courier New", monospace;
+        }
+
+        .terminal-panel::before {
+            content: "WORKFLOW TERMINAL";
+            display: block;
+            margin-bottom: 12px;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .terminal-panel .message {
+            margin: 0 0 14px;
+            padding: 10px 12px;
+            border-left: 3px solid #f59e0b;
+            background: #1f2937;
+            color: #f8fafc;
+            white-space: pre-line;
+        }
+
+        .duplicate-upload-toast {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            z-index: 1000;
+            width: min(390px, calc(100vw - 36px));
+            padding: 14px 16px;
+            border: 1px solid #d97706;
+            border-left: 5px solid #b45309;
+            border-radius: 8px;
+            background: #fffbeb;
+            color: #78350f;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.22);
+            font-weight: 600;
+        }
+
+        .duplicate-upload-toast strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .logs {
+            margin: 0;
+        }
+
+        .terminal-panel .logs h2 {
+            margin: 0 0 10px;
+            color: #f8fafc;
+            font-size: 15px;
+        }
+
+        .logs ul {
+            max-height: 360px;
+            margin: 0;
+            padding: 0;
+            overflow: auto;
+            background: transparent;
+            list-style: none;
+        }
+
+        .logs li {
+            margin: 0;
+            padding: 6px 0;
+            border-bottom: 1px solid #243244;
+            word-break: break-word;
+            color: #cbd5e1;
+        }
+
+        .logs li.log-info {
+            color: #cbd5e1;
+        }
+
+        .logs li.log-success {
+            color: #86efac;
+        }
+
+        .logs li.log-warning {
+            color: #fcd34d;
+        }
+
+        .logs li.log-notice {
+            color: #93c5fd;
+        }
+
+        .logs li.log-error {
+            color: #fca5a5;
+        }
+
+        .logs li.log-delete {
+            color: #fca5a5;
+        }
+
+        .table-picker {
+            margin: 12px 0 16px;
+            overflow-x: auto;
+        }
+
+        .table-picker-grid {
+            width: 100%;
+            min-width: 720px;
+            border-collapse: collapse;
+            table-layout: fixed;
+            background: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .table-picker-grid th,
+        .table-picker-grid td {
+            width: 33.33%;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .table-picker-grid th {
+            background: #f6f6f6;
+            font-size: 14px;
+        }
+
+        .table-picker-slot-empty {
+            min-height: 22px;
+        }
+
+        .database-preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .database-preview-form {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .database-preview-form label {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 280px;
+        }
+
+        .database-preview-form select {
+            min-height: 38px;
+            padding: 8px 10px;
+        }
+
+        .database-preview-meta {
+            margin: 14px 0 10px;
+            color: #444;
+            font-size: 14px;
+        }
+
+        .database-preview-table-wrap {
+            overflow: auto;
+            max-height: 620px;
+            border: 1px solid #ddd;
+            background: #fff;
+            scrollbar-gutter: stable both-edges;
+        }
+
+        .database-preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 720px;
+        }
+
+        .database-preview-table th,
+        .database-preview-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            vertical-align: top;
+            white-space: nowrap;
+        }
+
+        .database-preview-table th {
+            position: sticky;
+            top: 0;
+            background: #f6f6f6;
+            z-index: 1;
+        }
+
+        .table-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .table-option input[type="checkbox"] {
+            margin-top: 3px;
+        }
+
+        .table-picker-extra-note {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            background: #fafafa;
+            color: #444;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .hint {
+            margin-top: 10px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        textarea.sql-query-box {
+            display: block;
+            width: 100%;
+            min-height: 170px;
+            margin: 12px 0 16px;
+            padding: 12px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        /* Page busy state: block duplicate clicks while a step is running/loading */
+        body.page-busy {
+            cursor: wait;
+        }
+
+        body.page-busy button,
+        body.page-busy input[type="submit"] {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        body.page-busy .download-button,
+        body.page-busy .links a {
+            pointer-events: none;
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 980px) {
+            .page-layout {
+                flex-direction: column;
+            }
+
+            .side-panel {
+                width: 100%;
+                flex: 1 1 auto;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .table-picker-grid {
+                min-width: 640px;
+            }
+        }
+
+        /* Lightweight local adaptation of the supplied Aging Upload UI. */
+        :root {
+            --aging-bg: #f3f2f2;
+            --aging-surface: #eae9e9;
+            --aging-text: #201e1d;
+            --aging-accent: #ec3013;
+            --aging-divider: #8d8989;
+            --space-6: 24px;
+            --color-neutral-700: #605d5d;
+        }
+
+        body {
+            background: var(--aging-bg);
+            color: var(--aging-text);
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.55;
+        }
+
+        .page {
+            width: min(960px, calc(100% - 48px));
+            padding: 32px 24px 40px;
+        }
+
+        .program-bar {
+            padding: 0 var(--space-6);
+            border-bottom: 2px solid var(--aging-divider);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-6);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-right: auto;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .nav-logo {
+            height: 44px;
+            width: auto;
+            flex: 0 0 auto;
+        }
+
+        .nav-meta {
+            color: var(--color-neutral-700);
+            font-size: 13px;
+        }
+
+        .bol-panel-link {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            z-index: 1000;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 10px 14px;
+            border-radius: 6px 0 0 6px;
+            background: var(--aging-accent);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            transform: translateY(-50%);
+        }
+
+        .bol-panel-link:hover,
+        .bol-panel-link:focus-visible {
+            background: #c9270f;
+            color: #fff;
+        }
+
+        .program-bar strong {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .program-bar span {
+            font-size: 13px;
+        }
+
+        .workflow-intro {
+            margin-top: 0;
+            margin-bottom: 32px;
+        }
+
+        .workflow-intro h1 {
+            font-size: 34px;
+            font-weight: 800;
+        }
+
+        .workflow-intro-subtitle {
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+
+        .workflow-intro::after {
+            content: "";
+            display: block;
+            height: 2px;
+            margin-top: 24px;
+            background: var(--aging-divider);
+        }
+
+        .customer-selector-box,
+        .files-uploader-box {
+            border: 0;
+            box-shadow: 0 1px 2px rgba(45, 43, 43, 0.14);
+            background: var(--aging-surface);
+        }
+
+        .customer-selector-box {
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .files-uploader-box {
+            padding: 16px 40px;
+        }
+
+        .upload-step-badge {
+            background: var(--aging-accent);
+        }
+
+        .customer-selector-box select,
+        .files-uploader-box input[type="file"] {
+            background: var(--aging-surface);
+            border: 1px solid var(--aging-divider);
+        }
+
+        .customer-selector-box select:focus,
+        .files-uploader-box input[type="file"]:focus {
+            outline: 2px solid var(--aging-accent);
+            outline-offset: 0;
+        }
+
+        .customer-selection-status,
+        .inquiry-file-status,
+        .report-summary-status {
+            background: #fff2ef;
+            color: #ae1800;
+        }
+
+        .files-uploader-box .step-actions button,
+        .report-summary-actions button {
+            background: var(--aging-accent);
+            color: #fff;
+            border-radius: 0;
+        }
+
+        #step-01-form .step-actions button,
+        #step-01-form .step-actions .download-button {
+            width: fit-content;
+            min-height: 0;
+            padding: 8px 12px;
+            align-self: flex-start;
+            border-radius: 0;
+            font-size: 13px;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        #step-01-form.regular-accounts-step-form .step-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: end;
+            gap: 14px 20px;
+            min-height: 0;
+        }
+
+
+
+
+        #step-01-form .regular-accounts-person-select {
+            grid-column: 2;
+            grid-row: 1;
+            margin-top: 0;
+        }
+
+        #step-01-form .regular-accounts-person-select select {
+            display: block;
+            width: 100%;
+            margin-top: 6px;
+        }
+
+        #step-01-form .regular-accounts-process-button {
+            grid-column: 1;
+            grid-row: 2;
+            margin-top: 0;
+        }
+
+        .report-summary {
+            margin-top: 32px;
+            padding: 16px 0;
+            border-top: 2px solid var(--aging-divider);
+            border-bottom: 0;
+        }
+
+        .report-summary-actions .process-another-file {
+            background: transparent;
+            color: var(--aging-accent);
+        }
+
+        @media (max-width: 640px) {
+            .page {
+                width: 100%;
+                padding: 24px 16px 32px;
+            }
+
+            .program-bar {
+                padding-inline: 16px;
+            }
+
+            .files-uploader-box {
+                padding: 16px;
+            }
+
+
+        }
+
+
+
+
+        .process-progress-track {
+            height: 14px;
+            background: #e5e5e5;
+            border-radius: 7px;
+            overflow: hidden;
+        }
+
+        .process-progress-fill {
+            width: 0;
+            height: 100%;
+            background: #e8310f;
+            border-radius: 7px;
+            transition: width 0.4s ease;
+        }
+
+
+
+
+        .stop-process-button {
+            padding: 6px 14px;
+            border: 2px solid #b00020;
+            background: #ffffff;
+            color: #b00020;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .stop-process-button:hover {
+            background: #b00020;
+            color: #ffffff;
+        }
+
+
+        .inline-progress {
+            margin-top: 14px;
+            padding: 10px 12px;
+            background: #ffffff;
+            border: 1px solid #d6d6d6;
+            border-left: 4px solid #e8310f;
+        }
+
+        .inline-progress-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .inline-progress-title {
+            flex: 1 1 auto;
+        }
+
+        .inline-progress-file,
+        .inline-progress-stage {
+            margin-top: 6px;
+            font-size: 13px;
+            color: #444;
+            word-break: break-word;
+        }
+
+
+        .inline-progress.finished .process-progress-fill {
+            background: #1a7f37;
+        }
+
+        .inline-progress.failed .process-progress-fill {
+            background: #b00020;
+        }
+
+        .completion-toast {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 10001;
+            max-width: 460px;
+            padding: 14px 18px;
+            background: #1a7f37;
+            color: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            font-size: 15px;
+            line-height: 1.4;
+            cursor: pointer;
+            word-break: break-word;
+        }
+
+        .completion-toast.failed {
+            background: #b00020;
+        }
+
+        .completion-toast small {
+            display: block;
+            margin-top: 4px;
+            opacity: 0.85;
+        }
+
+    </style>
+    <link rel="icon" type="image/png" href="/static/logo.png">
+</head>
+<body>
+    {% if duplicate_upload_messages %}
+    <aside id="duplicate-upload-toast" class="duplicate-upload-toast" role="status" aria-live="polite">
+        <strong>Duplicate upload detected</strong>
+        <div>The upload proceeded normally.</div>
+        {% for duplicate_message in duplicate_upload_messages %}
+        <div>{{ duplicate_message.replace('Duplicate upload allowed: ', '') }}</div>
+        {% endfor %}
+    </aside>
+    {% endif %}
+    <main class="page"     >
+        <script>
+        function goHomeAndRefresh() {
+            window.location.href = window.location.origin + "/";
+        }
+
+        function confirmStep01AOverwrite() {
+            {% if step_01a_overwrite_warning %}
+            return window.confirm("Warning: Step 01A will overwrite existing SQL data in CR, IN, and DB report tables. Continue?");
+            {% endif %}
+            return true;
+        }
+
+        function bindStep01AOverwriteConfirmation() {
+            const form = document.getElementById("step-01a-form");
+            if (!form) {
+                return;
+            }
+
+            form.addEventListener("submit", function (event) {
+                if (!confirmStep01AOverwrite()) {
+                    event.preventDefault();
+                }
+            });
+        }
+
+        function handleStep04AHotkey(event) {
+            if (!(event.altKey && event.shiftKey && event.key.toLowerCase() === "a")) {
+                return;
+            }
+
+            const form = document.getElementById("step-04a-form");
+            if (!form) {
+                return;
+            }
+
+            event.preventDefault();
+            form.requestSubmit();
+        }
+
+        function saveScrollAnchor(anchorId) {
+            if (!anchorId) {
+                return;
+            }
+
+            window.localStorage.setItem("overstockScrollAnchor", anchorId);
+            window.location.hash = anchorId;
+        }
+
+        function bindScrollAnchorOnSubmit() {
+            const forms = document.querySelectorAll("form[data-scroll-anchor]");
+            forms.forEach(function (form) {
+                form.addEventListener("submit", function () {
+                    saveScrollAnchor(form.getAttribute("data-scroll-anchor"));
+                });
+            });
+        }
+
+        function setPageBusy(submitButton) {
+            if (window.overstockPageBusy) {
+                return;
+            }
+
+            window.overstockPageBusy = true;
+            document.body.classList.add("page-busy");
+
+            const buttons = document.querySelectorAll("button:not(.stop-process-button), input[type='submit']");
+            buttons.forEach(function (button) {
+                button.dataset.wasDisabled = String(button.disabled);
+                if (button === submitButton) {
+                    button.dataset.originalText = button.textContent;
+                    button.textContent = "Processing...";
+                }
+                button.disabled = true;
+            });
+        }
+
+        function clearPageBusy() {
+            window.overstockPageBusy = false;
+            document.body.classList.remove("page-busy");
+
+            const buttons = document.querySelectorAll("button:not(.stop-process-button), input[type='submit']");
+            buttons.forEach(function (button) {
+                button.disabled = button.dataset.wasDisabled === "true";
+                delete button.dataset.wasDisabled;
+                if (button.dataset.originalText) {
+                    button.textContent = button.dataset.originalText;
+                    delete button.dataset.originalText;
+                }
+            });
+        }
+
+        window.processProgress = (function () {
+            let timer = null;
+            let hideTimer = null;
+            let startedAt = 0;
+            let shown = 0;
+            let currentToken = "";
+            let inline = null;
+            let unknownPolls = 0;
+            let pollCount = 0;
+
+            function removeInline() {
+                if (inline && inline.parentNode) {
+                    inline.parentNode.removeChild(inline);
+                }
+                inline = null;
+            }
+
+            function createInline(anchorForm, fileLabel, title) {
+                removeInline();
+                if (!anchorForm) {
+                    return;
+                }
+                inline = document.createElement("div");
+                inline.className = "inline-progress";
+                inline.innerHTML =
+                    '<div class="inline-progress-top"><strong class="inline-progress-title"></strong>' +
+                    '<strong class="inline-progress-percent">0%</strong>' +
+                    '<button type="button" class="stop-process-button">Stop &amp; refresh</button></div>' +
+                    '<div class="process-progress-track"><div class="process-progress-fill inline-progress-fill"></div></div>' +
+                    '<div class="inline-progress-file"></div><div class="inline-progress-stage">Starting...</div>';
+                inline.querySelector(".inline-progress-title").textContent = title || "Processing";
+                inline.querySelector(".inline-progress-file").textContent = fileLabel ? "File: " + fileLabel : "";
+                inline.querySelector(".stop-process-button").addEventListener("click", stopAllProcesses);
+                anchorForm.appendChild(inline);
+            }
+
+            function render(percent, stage, state) {
+                if (!inline) {
+                    return;
+                }
+                inline.classList.toggle("finished", state === "finished");
+                inline.classList.toggle("failed", state === "failed");
+                inline.querySelector(".inline-progress-fill").style.width = percent + "%";
+                inline.querySelector(".inline-progress-percent").textContent = Math.round(percent) + "%";
+                const seconds = "(" + Math.round((Date.now() - startedAt) / 1000) + "s)";
+                if (stage) {
+                    inline.querySelector(".inline-progress-stage").textContent = "Now: " + stage + " " + seconds;
+                }
+            }
+
+            async function poll(token) {
+                try {
+                    const response = await fetch("/progress/status?token=" + encodeURIComponent(token), { credentials: "same-origin" });
+                    const status = await response.json();
+                    pollCount += 1;
+                    unknownPolls = status.known ? 0 : unknownPolls + 1;
+                    // Give up quietly if the server never heard of this job (or it runs absurdly long).
+                    if (unknownPolls > 120 || pollCount > 1800) {
+                        window.clearInterval(timer);
+                        timer = null;
+                        removeInline();
+                        return;
+                    }
+                    const serverPercent = status.percent || 0;
+                    // Between server updates, creep forward a little so a long step never looks frozen.
+                    const ceiling = status.done ? 100 : Math.min(95, serverPercent + (status.excel ? 30 : 8));
+                    shown = Math.max(shown, serverPercent);
+                    if (!status.done && shown < ceiling) {
+                        shown = Math.min(ceiling, shown + (status.excel ? 0.35 : 0.2));
+                    }
+                    render(shown, status.stage, "");
+                    if (status.done) {
+                        if (status.error) {
+                            stop(status.stage + ": " + status.error, true);
+                        } else {
+                            stop(status.stage, false, status.file);
+                        }
+                    }
+                } catch (error) {
+                    render(shown, null, "");
+                }
+            }
+
+            function notify(text, detail, isError) {
+                const old = document.getElementById("completion-toast");
+                if (old) {
+                    old.remove();
+                }
+                const toast = document.createElement("div");
+                toast.id = "completion-toast";
+                toast.className = "completion-toast" + (isError ? " failed" : "");
+                const strong = document.createElement("strong");
+                strong.textContent = text;
+                toast.appendChild(strong);
+                if (detail) {
+                    const small = document.createElement("small");
+                    small.textContent = detail;
+                    toast.appendChild(small);
+                }
+                toast.addEventListener("click", function () { toast.remove(); });
+                document.body.appendChild(toast);
+                window.setTimeout(function () { toast.remove(); }, isError ? 15000 : 10000);
+            }
+
+            function stop(message, isError, fileName) {
+                if (timer) {
+                    window.clearInterval(timer);
+                    timer = null;
+                }
+                // Native downloads never reload the page, so release the busy button and cursor here.
+                if (window.overstockPageBusy) {
+                    clearPageBusy();
+                }
+                shown = isError ? shown : 100;
+                const finalMessage = !isError && fileName ? "Completed: " + fileName : message;
+                render(shown, finalMessage, isError ? "failed" : "finished");
+                if (isError) {
+                    notify("Process failed", message, true);
+                } else {
+                    notify("✔ Completed", fileName ? fileName : message, false);
+                }
+                if (hideTimer) {
+                    window.clearTimeout(hideTimer);
+                }
+                hideTimer = window.setTimeout(removeInline, isError ? 12000 : 4000);
+            }
+
+            function start(token, fileLabel, title, anchorForm) {
+                if (timer) {
+                    window.clearInterval(timer);
+                }
+                if (hideTimer) {
+                    window.clearTimeout(hideTimer);
+                }
+                currentToken = token;
+                startedAt = Date.now();
+                shown = 2;
+                unknownPolls = 0;
+                pollCount = 0;
+                createInline(anchorForm, fileLabel, title);
+                render(shown, "Starting...", "");
+                timer = window.setInterval(function () { poll(token); }, 1000);
+            }
+
+            return { start: start, stop: stop, notify: notify, currentToken: function () { return currentToken; } };
+        })();
+
+        async function stopAllProcesses() {
+            // Stop the browser request, tell the server to cancel every running job, then refresh the app.
+            if (window.processAbort) {
+                try { window.processAbort.abort(); } catch (error) { /* already finished */ }
+            }
+            const body = new URLSearchParams({ token: window.processProgress.currentToken() || "", all: "1" });
+            try {
+                await Promise.race([
+                    fetch("/progress/cancel", { method: "POST", body: body, credentials: "same-origin", keepalive: true }),
+                    new Promise(function (resolve) { window.setTimeout(resolve, 5000); })
+                ]);
+            } catch (error) {
+                // refresh anyway
+            }
+            window.location.reload();
+        }
+
+        function newProgressToken() {
+            return window.crypto && window.crypto.randomUUID
+                ? window.crypto.randomUUID()
+                : "job-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+        }
+
+        function bindRegularAccountsReport() {
+            const form = document.getElementById("step-01-form");
+            const companyCodeInput = form ? form.querySelector("input[name='company_code']") : null;
+            if (!form || !companyCodeInput || companyCodeInput.value !== "regularaccounts") {
+                return;
+            }
+
+            form.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                const fileInput = form.querySelector("input[name='inquiry_file']");
+                const personSelect = form.querySelector("select[name='assigned_person']");
+                const selectedFile = fileInput && fileInput.files && fileInput.files[0];
+                if (!selectedFile || !personSelect || !personSelect.value) {
+                    return;
+                }
+
+                const token = newProgressToken();
+                const submitButton = event.submitter || form.querySelector("button[type='submit']");
+                setPageBusy(submitButton);
+                window.processProgress.start(token, selectedFile.name + " (" + personSelect.value + ")", "Building Regular Accounts report", form);
+
+                const requestData = new FormData(form);
+                requestData.set("download_token", token);
+                // Browser-local today (YYYY-MM-DD) drives the Past-due invoices sheet.
+                const localNow = new Date();
+                requestData.set("browser_date", localNow.getFullYear() + "-" + String(localNow.getMonth() + 1).padStart(2, "0") + "-" + String(localNow.getDate()).padStart(2, "0"));
+                try {
+                    window.processAbort = new AbortController();
+                    const response = await fetch(form.action, { method: "POST", body: requestData, credentials: "same-origin", signal: window.processAbort.signal });
+                    if (!response.ok) {
+                        let message = "The report could not be built.";
+                        try {
+                            message = (await response.json()).error || message;
+                        } catch (parseError) {
+                            // keep the generic message
+                        }
+                        window.processProgress.stop(message, true);
+                        return;
+                    }
+
+                    const blob = await response.blob();
+                    const disposition = response.headers.get("Content-Disposition") || "";
+                    const nameMatch = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(disposition);
+                    const downloadName = nameMatch ? decodeURIComponent(nameMatch[1]) : "Regular Accounts Report.xlsx";
+                    // The busy guard cancels clicks on links, so release it before the download click.
+                    clearPageBusy();
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = downloadName;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    window.setTimeout(function () { URL.revokeObjectURL(link.href); }, 10000);
+                    window.processProgress.stop("Report ready - downloaded " + downloadName, false, downloadName);
+                } catch (error) {
+                    window.processProgress.stop("The report could not be prepared. Please try again.", true);
+                } finally {
+                    if (window.overstockPageBusy) {
+                        clearPageBusy();
+                    }
+                }
+            });
+        }
+
+        function bindNativeProgress() {
+            const forms = [];
+            const stepForm = document.getElementById("step-01-form");
+            const stepCompany = stepForm ? stepForm.querySelector("input[name='company_code']") : null;
+            if (stepForm && stepCompany && stepCompany.value !== "regularaccounts") {
+                forms.push({ form: stepForm, title: "Processing file" });
+            }
+
+            forms.forEach(function (entry) {
+                entry.form.addEventListener("submit", function (event) {
+                    if (event.defaultPrevented) {
+                        return;
+                    }
+                    let tokenInput = entry.form.querySelector("input[name='download_token']");
+                    if (!tokenInput) {
+                        tokenInput = document.createElement("input");
+                        tokenInput.type = "hidden";
+                        tokenInput.name = "download_token";
+                        entry.form.appendChild(tokenInput);
+                    }
+                    if (!tokenInput.value) {
+                        tokenInput.value = newProgressToken();
+                    }
+                    const names = Array.from(entry.form.querySelectorAll("input[type='file']"))
+                        .map(function (input) { return input.files && input.files[0] ? input.files[0].name : ""; })
+                        .filter(Boolean);
+                    window.setTimeout(function () {
+                        window.processProgress.start(tokenInput.value, names.join(" + "), entry.title, entry.form);
+                    }, 0);
+                });
+            });
+        }
+
+        function bindProcessButtonGate() {
+            const form = document.getElementById("step-01-form");
+            const companyCodeInput = form ? form.querySelector("input[name='company_code']") : null;
+            const fileInput = form ? form.querySelector("input[name='inquiry_file']") : null;
+            const button = form ? form.querySelector("button[type='submit']") : null;
+            if (!form || !companyCodeInput || !fileInput || !button || companyCodeInput.value === "regularaccounts") {
+                return;
+            }
+
+            const sync = function () {
+                button.disabled = !(fileInput.files && fileInput.files.length);
+            };
+            fileInput.addEventListener("change", sync);
+            sync();
+        }
+
+        function bindPageBusyOnSubmit() {
+            const forms = document.querySelectorAll("form");
+            forms.forEach(function (form) {
+                form.addEventListener("submit", function (event) {
+                    const submitButton = event.submitter || document.activeElement;
+
+                    window.setTimeout(function () {
+                        if (event.defaultPrevented) {
+                            return;
+                        }
+
+                        setPageBusy(submitButton);
+                    }, 0);
+                });
+            });
+        }
+
+        function bindReportDownload() {
+            const form = document.getElementById("one-click-report-form");
+            if (!form) {
+                return;
+            }
+
+            form.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                const submitButton = event.submitter || form.querySelector("button[type='submit']");
+                setPageBusy(submitButton);
+
+                try {
+                    const requestData = new FormData(form);
+                    requestData.set("prepare_download", "true");
+                    const response = await fetch(form.action, {
+                        method: "POST",
+                        body: requestData,
+                        credentials: "same-origin"
+                    });
+                    if (!response.ok) {
+                        const errorPage = await response.text();
+                        document.open();
+                        document.write(errorPage);
+                        document.close();
+                        return;
+                    }
+
+                    const result = await response.json();
+                    renderReportProcedureLogs(result.logs || []);
+                    clearPageBusy();
+                    window.location.assign(result.download_url);
+                } catch (error) {
+                    clearPageBusy();
+                    window.alert("The report could not be prepared. Please try again.");
+                }
+            });
+        }
+
+        function renderReportProcedureLogs(logs) {
+            let terminalPanel = document.querySelector(".terminal-panel");
+            if (!terminalPanel) {
+                terminalPanel = document.createElement("section");
+                terminalPanel.className = "terminal-panel";
+                document.querySelector("main").appendChild(terminalPanel);
+            }
+
+            terminalPanel.replaceChildren();
+            const logsSection = document.createElement("section");
+            logsSection.className = "logs";
+            const heading = document.createElement("h2");
+            heading.textContent = "Procedure Logs";
+            const entries = document.createElement("ul");
+
+            logs.forEach(function (log) {
+                const entry = document.createElement("li");
+                const level = String(log.level || "INFO").toLowerCase();
+                entry.className = `log-${level}`;
+                entry.textContent = `[${log.timestamp || ""}] [${log.level || "INFO"}] ${log.message || ""}`;
+                entries.appendChild(entry);
+            });
+
+            logsSection.appendChild(heading);
+            logsSection.appendChild(entries);
+            terminalPanel.appendChild(logsSection);
+            terminalPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        function bindInquiryFileFeedback() {
+            const fileInput = document.querySelector("#step-01-form input[name='inquiry_file']");
+            const fileStatus = document.getElementById("inquiry-file-status");
+            const processAnotherButton = document.getElementById("process-another-file");
+            if (!fileInput || !fileStatus) {
+                return;
+            }
+
+            fileInput.addEventListener("change", function () {
+                const selectedFile = fileInput.files && fileInput.files[0];
+                fileStatus.textContent = selectedFile ? `Selected: ${selectedFile.name}` : "No file selected.";
+            });
+
+            if (processAnotherButton) {
+                processAnotherButton.addEventListener("click", function () {
+                    fileInput.value = "";
+                    fileStatus.textContent = "No file selected.";
+                    fileInput.focus();
+                });
+            }
+        }
+
+        function bindCompanySelector() {
+            const selector = document.getElementById("customer-display-select");
+            if (!selector) {
+                return;
+            }
+
+            selector.addEventListener("change", function () {
+                document.querySelectorAll(".company-code-input").forEach(function (input) {
+                    input.value = selector.value;
+                });
+                const url = new URL(window.location.href);
+                url.searchParams.set("company_code", selector.value);
+                window.location.assign(url.toString());
+            });
+        }
+
+        function bindAmazonNativeDownloadBusyReset() {
+            const form = document.getElementById("step-01-form");
+            const companyCodeInput = form ? form.querySelector("input[name='company_code']") : null;
+            if (!form || !companyCodeInput || companyCodeInput.value !== "amazonaccounts") {
+                return;
+            }
+
+            form.addEventListener("submit", function (event) {
+                const submitButton = event.submitter || form.querySelector("button[type='submit']");
+                const downloadToken = window.crypto && window.crypto.randomUUID
+                    ? window.crypto.randomUUID()
+                    : `amazon-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                let tokenInput = form.querySelector("input[name='download_token']");
+                if (!tokenInput) {
+                    tokenInput = document.createElement("input");
+                    tokenInput.type = "hidden";
+                    tokenInput.name = "download_token";
+                    form.appendChild(tokenInput);
+                }
+                tokenInput.value = downloadToken;
+                setPageBusy(submitButton);
+
+                const statusTimer = window.setInterval(async function () {
+                    try {
+                        const response = await fetch(
+                            `/download/amazon-download-status?download_token=${encodeURIComponent(downloadToken)}`,
+                            { credentials: "same-origin" }
+                        );
+                        const status = await response.json();
+                        if (status.complete) {
+                            window.clearInterval(statusTimer);
+                            clearPageBusy();
+                        }
+                    } catch (error) {
+                        // Keep Processing visible while the native download request is still active.
+                    }
+                }, 250);
+            });
+        }
+
+        function bindRegularAccountsPersonDropdown() {
+            const form = document.getElementById("step-01-form");
+            const companyCodeInput = form ? form.querySelector("input[name='company_code']") : null;
+            const fileInput = form ? form.querySelector("input[name='inquiry_file']") : null;
+            const personSelect = form ? form.querySelector("select[name='assigned_person']") : null;
+            const processButton = form ? form.querySelector(".regular-accounts-process-button") : null;
+            if (!form || !companyCodeInput || companyCodeInput.value !== "regularaccounts" || !fileInput || !personSelect) {
+                return;
+            }
+
+            const resetPeople = function (message) {
+                personSelect.replaceChildren(new Option(message, ""));
+                personSelect.disabled = true;
+                if (processButton) {
+                    processButton.disabled = true;
+                }
+            };
+
+            fileInput.addEventListener("change", async function () {
+                const selectedFile = fileInput.files && fileInput.files[0];
+                if (!selectedFile) {
+                    resetPeople("Select Person");
+                    return;
+                }
+
+                resetPeople("Reading Full Ageing...");
+                const requestData = new FormData();
+                requestData.append("workbook_file", selectedFile);
+
+                try {
+                    const response = await fetch("/process/regular-accounts/people", {
+                        method: "POST",
+                        body: requestData,
+                        credentials: "same-origin",
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.error || "Could not read the workbook.");
+                    }
+
+                    personSelect.replaceChildren(new Option("Select Person", ""));
+                    for (const person of result.people) {
+                        personSelect.add(new Option(person.label, person.name));
+                    }
+                    personSelect.disabled = result.people.length === 0;
+                    if (processButton) {
+                        processButton.disabled = true;
+                    }
+                    if (result.people.length === 0) {
+                        resetPeople("No Assigned Person values found");
+                    }
+                } catch (error) {
+                    resetPeople(error.message || "Could not read workbook");
+                }
+            });
+
+            personSelect.addEventListener("change", function () {
+                if (processButton) {
+                    processButton.disabled = !personSelect.value;
+                }
+            });
+        }
+
+        function blockClicksWhileBusy() {
+            document.addEventListener("click", function (event) {
+                if (!window.overstockPageBusy) {
+                    return;
+                }
+
+                if (event.target.closest(".stop-process-button")) {
+                    return;
+                }
+
+                const clickable = event.target.closest("button, a, input[type='submit']");
+                if (!clickable) {
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+            }, true);
+        }
+
+        function bindWorkflowToolsExpandLabel() {
+            const panel = document.querySelector("details.workflow-tools-expand");
+            if (!panel) {
+                return;
+            }
+
+            const summary = panel.querySelector("summary");
+            if (!summary) {
+                return;
+            }
+            const updateLabel = function () {
+                summary.textContent = panel.open ? "Expanded Workflow Tools" : "Expand Workflow Tools";
+            };
+
+            updateLabel();
+            panel.addEventListener("toggle", updateLabel);
+        }
+
+        function restoreScrollAnchor() {
+            const anchorId = window.location.hash.replace("#", "") || window.localStorage.getItem("overstockScrollAnchor");
+            if (!anchorId) {
+                return;
+            }
+
+            const anchorElement = document.getElementById(anchorId);
+            if (!anchorElement) {
+                return;
+            }
+
+            window.setTimeout(function () {
+                anchorElement.scrollIntoView({ behavior: "auto", block: "start" });
+            }, 60);
+        }
+
+        window.addEventListener("keydown", handleStep04AHotkey);
+        window.addEventListener("DOMContentLoaded", bindScrollAnchorOnSubmit);
+        window.addEventListener("DOMContentLoaded", bindPageBusyOnSubmit);
+        window.addEventListener("DOMContentLoaded", bindReportDownload);
+        window.addEventListener("DOMContentLoaded", bindAmazonNativeDownloadBusyReset);
+        window.addEventListener("DOMContentLoaded", bindRegularAccountsPersonDropdown);
+        window.addEventListener("DOMContentLoaded", bindRegularAccountsReport);
+        window.addEventListener("DOMContentLoaded", bindNativeProgress);
+        window.addEventListener("DOMContentLoaded", bindProcessButtonGate);
+        window.addEventListener("DOMContentLoaded", bindInquiryFileFeedback);
+        window.addEventListener("DOMContentLoaded", bindCompanySelector);
+        window.addEventListener("DOMContentLoaded", blockClicksWhileBusy);
+        window.addEventListener("DOMContentLoaded", bindWorkflowToolsExpandLabel);
+        window.addEventListener("DOMContentLoaded", restoreScrollAnchor);
+        window.addEventListener("DOMContentLoaded", bindStep01AOverwriteConfirmation);
+        </script>
+
+        <div class="nav program-bar">
+            <div class="nav-brand" role="button" tabindex="0" onclick="goHomeAndRefresh()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); goHomeAndRefresh(); }"><img class="nav-logo" src="/static/logo.png" alt="Easy Solutionz logo"><span>Wal Mart &amp; Amazon &amp; Regular Accounts</span></div>
+            <div class="nav-meta">Internal Finance Tool</div>
+        </div>
+        <a class="bol-panel-link" href="http://192.168.2.14:8766/" target="_blank" rel="noopener noreferrer">BOL PANEL</a>
+        <div class="workflow-intro">
+            <div class="workflow-intro-head">
+                <h1>Accounts Status Summary</h1>
+            </div>
+            <p class="workflow-intro-subtitle">Select a customer, upload the inquiry file, and download the report.</p>
+        </div>
+
+        <div class="page-layout">
+            <div class="main-content">
+        <section class="step-box" id="workflow-steps-section">
+            <div class="customer-selector-box">
+                <div class="upload-panel-title">
+                    <span class="upload-step-badge">1</span>
+                    <h2>Select Customer</h2>
+                </div>
+                <label for="customer-display-select">Marketplace
+                    <select id="customer-display-select" aria-label="Customer marketplace">
+                        {% for company_profile in company_profiles %}
+                        <option value="{{ company_profile.code }}" {% if selected_company_code == company_profile.code %}selected{% endif %}>{{ company_profile.display_name }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                {% if selected_company_code == "wallmartsummary" %}
+                <p class="customer-selection-status">Wall Mart Summary selected — Python file-only reporting; no database is used.</p>
+                {% elif selected_company_code == "amazonaccounts" %}
+                <p class="customer-selection-status">Amazon Accounts selected — file-only processing; no database is used.</p>
+                {% elif selected_company_code == "regularaccounts" %}
+                <p class="customer-selection-status">Regular Accounts selected — serverless XLSX processing; no database is used.</p>
+                {% elif selected_company_code == "newageing" %}
+                <p class="customer-selection-status">New Agening selected — compares two local XLSX workbooks by Ref# only; no database server is used.</p>
+                {% else %}
+                <p class="customer-selection-status">{{ selected_company_name }} selected — database: <strong>{{ sql_database }}</strong></p>
+                {% endif %}
+            </div>
+            <div class="files-uploader-box">
+                <div class="upload-panel-title">
+                    <span class="upload-step-badge">2</span>
+                    <h2>{% if selected_company_code == "wallmartsummary" %}Upload Wal Mart inquiry file{% elif selected_company_code == "amazonaccounts" %}Upload Amazon status file{% elif selected_company_code == "regularaccounts" %}Upload Regular Accounts workbook{% elif selected_company_code == "newageing" %}Compare ageing workbooks{% else %}Upload inquiry file{% endif %}</h2>
+                </div>
+                {% if selected_company_code == "wallmartsummary" %}
+                <p class="upload-panel-description">Uses the approved Wal Mart workbook template. Python refreshes Total and creates the status report without SQL Server.</p>
+                {% elif selected_company_code == "amazonaccounts" %}
+                <p class="upload-panel-description">Covers all accounts: <strong>AM9285, AM9286</strong>. Accounts are detected automatically.</p>
+                {% elif selected_company_code == "regularaccounts" %}
+                <p class="upload-panel-description">Serverless <strong>.xlsx</strong> processing is ready to be configured. No processing rules have been applied yet.</p>
+                {% elif selected_company_code == "newageing" %}
+                <p class="upload-panel-description">Select the old and current workbooks together. Only <strong>Ref#</strong> is compared; all current-workbook columns are retained for new Ref# rows.</p>
+                {% else %}
+                <p class="upload-panel-description">Covers all accounts: <strong>WA9085, WC9085, SA9200, WM9263</strong>. Accounts are detected automatically.</p>
+                {% endif %}
+                {% if selected_company_code == "newageing" %}
+                <div id="na-tool">
+                <link rel="stylesheet" href="/static/new_ageing.css">
+                <p class="upload-panel-description">Compare old vs new ageing file by <b>Ref#</b> and download only the new entries in the original format. Runs fully in your browser &mdash; files never leave this computer.</p>
+                <div class="card"><div class="row">
+                <div><div class="drop" id="na-d1"><b>1. OLD file</b><span class="fn">Click or drop .xlsx here</span></div><input type="file" id="na-f1" accept=".xlsx"></div>
+                <div><div class="drop" id="na-d2"><b>2. NEW file</b><span class="fn">Click or drop .xlsx here</span></div><input type="file" id="na-f2" accept=".xlsx"></div>
+                </div>
+                <div class="opts"><span><label for="na-sh">Sheet</label><select id="na-sh"><option>Full Ageing</option></select></span>
+                <span><label for="na-col">Key column header</label><input type="text" id="na-col" value="Ref#" size="8"></span>
+                <span><label><input type="checkbox" id="na-strip" checked> Remove rows above header in download</label></span>
+                <button type="button" id="na-go" disabled>Find new entries</button></div>
+                <div id="na-msg"></div></div>
+                <div class="card" id="na-res" hidden>
+                <div class="stats"><div class="stat"><span>Old entries</span><b id="na-sO">0</b></div><div class="stat"><span>New file entries</span><b id="na-sN">0</b></div>
+                <div class="stat new"><span>New entries</span><b id="na-sW">0</b></div><div class="stat"><span>Gone (in old, not in new)</span><b id="na-sG">0</b></div></div>
+                <div style="height:12px"></div>
+                <div class="bar"><button type="button" id="na-dl">Download new entries (.xlsx)</button><button type="button" class="sec" id="na-dlg">Download gone entries (.xlsx)</button>
+                <span id="na-personbox" hidden><label for="na-person">Person</label><select id="na-person"></select></span>
+                <input type="text" id="na-q" placeholder="Filter preview&hellip;" size="24"><span id="na-cnt" style="color:var(--mut)"></span></div>
+                <div class="tw"><table id="na-tb"></table></div></div>
+                <script src="/static/exceljs.min.js"></script>
+                <script src="/static/new_ageing.js"></script>
+                </div>
+                {% else %}
+                <div class="grid">
+                <article class="workflow-card" id="step-01-section">
+                    <div class="workflow-card-info" aria-label="Step 01 info" tabindex="0">
+                        i
+                        <div class="workflow-card-info-tooltip">
+                            Upload the inquiry file to create and download the selected company report.
+                        </div>
+                    </div>
+                    <h2>Inquiry <!--Step 01 inquiry_sht &gt; CR DB INV --></h2>
+                 <!--   <p>Pick the inquiry sheet, normalize the column names for SQL, save the Step 01 workbook to output, and upload it to the server.</p>   -->
+                    <form id="step-01-form" class="{% if selected_company_code == "regularaccounts" %}regular-accounts-step-form{% endif %}" action="{% if selected_company_code == "regularaccounts" %}/process/regular-accounts/follow-up-report{% else %}/process/step-01{% endif %}" method="post" enctype="multipart/form-data" data-scroll-anchor="step-01-section">
+                        <input class="company-code-input" type="hidden" name="company_code" value="{{ selected_company_code }}">
+                        <div class="step-actions">
+                            <label>
+                                File <small>{% if selected_company_code == "regularaccounts" %}(.xlsx){% else %}(.csv, .xlsx, .xls){% endif %}</small>
+                                <input type="file" name="inquiry_file" accept="{% if selected_company_code == "regularaccounts" %}.xlsx{% else %}.xlsx,.xls,.csv{% endif %}" required>
+                                <small id="inquiry-file-status" class="inquiry-file-status">No file selected.</small>
+                            </label>
+                            {% if selected_company_code == "regularaccounts" %}
+                            <label class="regular-accounts-person-select">
+                                Person Name
+                                <select name="assigned_person" disabled aria-label="Assigned Person">
+                                    <option>Select Person</option>
+                                </select>
+                                <small>Select an XLSX workbook to load names from Full Ageing.</small>
+                            </label>
+                            <button class="regular-accounts-process-button" type="submit" disabled title="Select a Person Name to generate the report">Process</button>
+                            {% else %}
+                            {% if selected_company_code == "amazonaccounts" %}
+                            <fieldset class="amazon-account-picker">
+                                <legend><small>Accounts (Full Ageing upload)</small></legend>
+                                <label><input type="checkbox" name="amazon_accounts" value="AM9285" checked> AM9285</label>
+                                <label><input type="checkbox" name="amazon_accounts" value="AM9286" checked> AM9286</label>
+                                <label><input type="checkbox" name="amazon_accounts" value="ME9145"> ME9145</label>
+                            </fieldset>
+                            {% endif %}
+                            <button type="submit">{% if selected_company_code == "wallmartsummary" %}Process Wal Mart File{% elif selected_company_code == "amazonaccounts" %}Process Amazon File{% else %}Upload{% endif %}</button> <!--Run Step 01   old name -->
+                            {% endif %}
+                       <!--    {% if step_01_download_available %}
+                            <a href="/download/step-01" class="download-button">Download Step 01 File</a>
+                            {% endif %} -->
+                        </div>
+                    </form>
+                </article>
+
+                </div>
+                {% endif %}
+            </div>
+            {% if selected_company_code not in ["wallmartsummary", "amazonaccounts", "regularaccounts", "newageing"] %}
+
+            {% endif %}
+        </section>
+
+
+            <hr>
+
+<!--            MAKE  THESE   ALL   BELOW   SECTIONS    UNDER  THE   EXPAND   BUTTON   TILL END      dont chnage  anyting below here          -->
+ 
+
+
+
+<!-- ================= ============================ ======================== ===============================    ============  = = =
+-->
+
+  <!--  #LINE 1763  NEAR  class="side-panel"    i did  it  manuly  dont change or update it -->
+
+
+  
+ 
+  <details class="workflow-tools-expand"     style="display: none !important;     pointer-events: none;"  ><!-- i did  it  manuly  dont change or update it-->
+             <!--   <summary>Expand Workflow Tools</summary> -->
+                <div class="workflow-tools-expand-content">
+            <div class="workflow-intro-details">
+                <strong>Company</strong>
+                <span class="workflow-intro-company-code">wallmartsummary</span>
+                <strong>Current Batch_ID</strong>
+                <span class="workflow-intro-batch">
+                    {% if latest_batch_id is not none %}
+                    <span class="workflow-intro-company-code">{{ latest_batch_id }}</span>
+                    {% else %}
+                    <span>No batch yet</span>
+                    {% endif %}
+                    <button type="submit" form="step-08-database-optimization-form">step_08_DataBaseOptimization</button>
+                </span>
+                <strong>SQL Server</strong>
+                <span>{{ sql_server }}</span>
+                <strong>Database</strong>
+                <span>{{ sql_database }}</span>
+                <strong>Running app folder</strong>
+                <span>{{ runtime_app_path }}</span>
+                <strong>Running templates folder</strong>
+                <span>{{ runtime_templates_path }}</span>
+            </div>
+
+          <!--  <div class="invoice-number-box">
+                <div class="workflow-card-info" aria-label="Step 05 info" tabindex="0">
+                    i
+                    <div class="workflow-card-info-tooltip">
+                        Run Step 05 IN to rebuild Ndatee in step_01a_in_sheet, rebuild Odatee, and update invoice_db_number in step_02_po_details.
+                    </div>
+                </div>
+                <h2>Creating Inv + DBMatch Sheet</h2>
+                  <p><strong>Proc:</strong> <code>STEP_05_SQL: EXEC dbo.sp_Step_05_hd9200_Inv_Credit_Full_Update;</code> =&gt; <strong>Step05 IN &gt; Assign Inv#</strong>.</p>
+               
+                <div class="step-action-tooltip-wrap" tabindex="0">
+
+                    <div class="step-action-tooltip">
+                        Run Step 05 IN to rebuild Ndatee in step_01a_in_sheet, rebuild Odatee, and update invoice_db_number in step_02_po_details.
+                    </div>
+                </div>
+            </div> 
+
+            -->
+
+            <div class="gen-control-sheets-box">
+                <div class="workflow-card-info" aria-label="Step 5 &6 info" tabindex="0">
+                    i
+                    <div class="workflow-card-info-tooltip">
+                        Run the Wal Mart Summary DB status procedure from app\main.py.
+                    </div>
+                </div>
+                <h2>Step 5 &6</h2>
+                <p><strong>Proc:</strong> <code>EXEC dbo.sp_WallMartSummary_gen_DBs_Status;</code></p>
+                <div class="step-action-tooltip-wrap" tabindex="0">
+
+                    <div class="step-action-tooltip">
+                        Run the Wal Mart Summary DB status procedure from app\main.py.
+                    </div>
+                </div>
+            </div>
+         <!--   <div class="gen-control-sheets-box">
+                <div class="workflow-card-info" aria-label="Step 06 CR info" tabindex="0">
+                    i
+                    <div class="workflow-card-info-tooltip">
+                        Run Step 06 CR to assign CR numbers for the credit match sheet flow.
+                    </div>
+                </div>
+                <h2>Generate Credit Match Sheet</h2>
+                <p><strong>Proc:</strong> <code>STEP_06_SQL:EXEC dbo.sp_step_06_hd9200_Generating_Credit_Match_Sheet;</code> =&gt; <strong>(assign CR#) Run Step06 CR</strong>.</p>
+                <div class="step-action-tooltip-wrap" tabindex="0">
+
+                    <div class="step-action-tooltip">
+                        Run Step 06 CR to assign CR numbers for the credit match sheet flow.
+                    </div>
+                </div>
+            </div>
+
+        --> 
+            
+            <div class="gen-control-sheets-box">
+                <div class="workflow-card-info" aria-label="Invoice Payment Breakdown info" tabindex="0">
+                    i
+                    <div class="workflow-card-info-tooltip">
+                        Build the deduction and payment breakdown SQL tables from Credit_Match_Sheet and Inv_DB_Match_Sheet.
+                    </div>
+                </div>
+                <h2>Invoice Payment Breakdown</h2>
+                <p><strong>Output tables:</strong> Invoice_Status </p>
+                <p><strong>Proc:</strong> <code>EXEC dbo.sp_WallMartSummary_Invoice_Status;</code></p>
+                <div class="step-action-tooltip-wrap" tabindex="0">
+                    <button type="submit" form="invoice-payment-breakdown-form">sp_WallMartSummary_Invoice_Status</button>
+                    <div class="step-action-tooltip">
+                        Build the deduction and payment breakdown SQL tables from Credit_Match_Sheet and Inv_DB_Match_Sheet.
+                    </div>
+                </div>
+            </div>
+ 
+
+
+
+
+
+
+        <!-- proc query -->
+
+    
+
+
+        <div class="hidden-section">
+<!--------------- 
+ 
+         ============================================
+                                                        --------->
+
+
+
+
+
+
+
+
+
+
+
+        <section class="step-box" id="step-06-section">
+            <div class="workflow-card-info" aria-label="Step 06 section info" tabindex="0">
+                i
+                <div class="workflow-card-info-tooltip">
+                    Run Step 06 CR from the separate SQL slot in app\main.py and use the grouped section buttons for CR assignment, DB updates, unapplied CR updates, and generated sheet refreshes.
+                </div>
+            </div>
+            <h2>Step 06 CR</h2>
+            <p><strong>Proc:</strong> <code>STEP_06D02_APPLYING_CR_UPDATE_SQL</code> = <strong>step6 D02 applying cr update</strong>; <code>STEP_08_DATABASE_OPTIMIZATION_SQL</code> = <strong>step_08_DataBaseOptimization</strong>; <code>DEDUCTIONS_SUMMARY_SQL</code> = <strong>Gen Deductions_Summary</strong>.</p>
+            <div class="step-06-grid">
+
+
+                <div class="step-06-column step-06-danger-zone">
+                    <h3>Section C (assign update CR to unapplied)</h3>
+
+                    <button type="submit" form="step-06d02-applying-cr-update-form">step6 D02 applying cr update</button>
+                </div>
+                <div class="step-06-column">
+                    <h3>Section D (gen sheets)</h3>
+                    <button type="submit" form="step-08-database-optimization-form">step_08_DataBaseOptimization</button>
+                    <button type="submit" form="deductions-summary-form">Gen Deductions_Summary</button>
+                </div>
+            </div>
+
+
+
+            <form id="step-08-database-optimization-form" action="/process/step-08-database-optimization" method="post" data-scroll-anchor="step-06-section">
+                <input class="company-code-input" type="hidden" name="company_code" value="{{ selected_company_code }}">
+            </form>
+            <form id="deductions-summary-form" action="/process/deductions-summary" method="post" data-scroll-anchor="step-06-section">
+                <input class="company-code-input" type="hidden" name="company_code" value="{{ selected_company_code }}">
+            </form>
+            <form id="step-06d02-applying-cr-update-form" action="/process/step-06d02-applying-cr-update" method="post" data-scroll-anchor="step-06-section">
+                <input class="company-code-input" type="hidden" name="company_code" value="{{ selected_company_code }}">
+            </form>
+            
+        </section>
+        <section class="step-box" id="step-07a-section">
+            <div class="workflow-card-info" aria-label="Step 07A info" tabindex="0">
+                i
+                <div class="workflow-card-info-tooltip">
+                    Refresh the Step 07A summary outputs as separate sections for deduction breakdown, gross-deduction-net summary, and PO status summary, or run all three together.
+                </div>
+            </div>
+            <h2>Step 07 A</h2>
+            <p><strong>Proc:</strong> <code>STEP_07A_DEDUCTION_BREAKDOWN_SQL</code> =&gt; <code>Step_09A_Deductions_BreakDown</code>; <code>STEP_07A_CREDIT_SUMMARY_SQL</code> =&gt; <code>Credit_CrDedNet_Summary</code>; <code>STEP_07A_PO_STATUS_SUMMARY_SQL</code> =&gt; <code>Po_Status_Sum_Summary</code>; <code>STEP_07A_SUMMARY_SQL</code> runs all three together.</p>
+            <div class="step-07a-grid">
+                <button type="submit" form="step-07a-deduction-breakdown-form">Section 1 = Deduction Breakdown</button>
+                <button type="submit" form="step-07a-credit-summary-form">Section 2 = Gross / Deduction / Net Pay Summary</button>
+                <button type="submit" form="step-07a-po-status-summary-form">Section 3 = PO Status Summary</button>
+                <button type="submit" form="step-07a-summary-form">step-07 A po_status /gross sumry / Deduction Breakdown</button>
+            </div>
+            <form id="step-07a-deduction-breakdown-form" action="/process/step-07a-deduction-breakdown" method="post" data-scroll-anchor="step-07a-section">
+                <input class="company-code-input" type="hidden" name="company_code" value="{{ selected_company_code }}">
+            </form>
+            <form id="step-07a-credit-summary-form" action="/process/step-07a-credit-summary" method="post" data-scroll-anchor="step-07a-section">
+                <input class="company-code-input" type="hidden" name="company_code" value="{{ selected_company_code }}">
+            </form>
+            <form id="step-07a-po-status-summary-form" action="/process/step-07a-po-status-summary" method="post" data-scroll-anchor="step-07a-section">
+                <input class="company-code-input" type="hidden" name="company_code" value="{{ selected_company_code }}">
+            </form>
+            <form id="step-07a-summary-form" action="/process/step-07a-summary" method="post" data-scroll-anchor="step-07a-section">
+                <input class="company-code-input" type="hidden" name="company_code" value="{{ selected_company_code }}">
+            </form>
+        </section>
+
+
+
+
+        <!--
+         ==========================================================
+                                                                     -->
+
+        </div>
+
+
+
+
+
+
+
+
+        <section class="step-box" id="step-07-section">
+            <div class="workflow-card-info" aria-label="Step 07 info" tabindex="0">
+                i
+                <div class="workflow-card-info-tooltip">
+                    Build the credit applied sheet from CR and invoice rows in a dynamic SQL flow.
+                </div>
+            </div>
+            <h2> Run Step 07 crApplied</h2>
+            <p><strong>Proc:</strong> <code>EXEC dbo.sp_hd9200_Gen_step_07_Credit_Applied_Sheet;</code> =&gt; <code>step_07_Credit_Applied_Sheet</code>.</p>
+            <form id="step-07-form" action="/process/step-07" method="post" data-scroll-anchor="step-07-section">
+                <input class="company-code-input" type="hidden" name="company_code" value="{{ selected_company_code }}">
+                <div class="step-actions">
+                    <button type="submit">Run step_07_crApplied</button>
+                </div>
+            </form>
+        </section>
+
+
+
+        <section class="step-box" id="step-08-database-optimization-section">
+            <div class="workflow-card-info" aria-label="Step 08 info" tabindex="0">
+                i
+                <div class="workflow-card-info-tooltip">
+                    Run the Step 08 database optimization query slot from app/main.py.
+                </div>
+            </div>
+            <h2>step_08_DataBaseOptimization</h2>
+            <p><strong>Proc:</strong> <code>STEP_08_DATABASE_OPTIMIZATION_SQL</code> =&gt; <code>EXEC dbo.sp_hd9200_Truncate_Selected_Tables;</code></p>
+            <form action="/process/step-08-database-optimization" method="post" data-scroll-anchor="step-08-database-optimization-section">
+                <input class="company-code-input" type="hidden" name="company_code" value="{{ selected_company_code }}">
+                <div class="step-actions">
+                    <button type="submit">step_08_DataBaseOptimization</button>
+                </div>
+                <p class="hint">Runs the Step 08 stored procedure directly from the visible workflow page.</p>
+            </form>
+        </section>
+
+        <section class="step-box" id="database-preview-section">
+            <div class="database-preview-header">
+                <div>
+                    <div class="workflow-card-info" aria-label="Database preview info" tabindex="0">
+                        i
+                        <div class="workflow-card-info-tooltip">
+                            Preview a selected SQL table directly in the workflow page. This view shows the first 20 rows so you can quickly inspect the current database output.
+                        </div>
+                    </div>
+                    <h2>Database Preview</h2>
+                </div>
+            </div>
+
+            <form class="database-preview-form" action="/preview-table" method="post" data-scroll-anchor="database-preview-section">
+                <input class="company-code-input" type="hidden" name="company_code" value="{{ selected_company_code }}">
+                <label>
+                    SQL table
+                    <select name="table_name" required>
+                        <option value="">Select a table</option>
+                        {% for table_name in available_sql_tables %}
+                        <option value="{{ table_name }}" {% if preview_table_name == table_name %}selected{% endif %}>{{ table_name }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <button type="submit">Preview Table</button>
+            </form>
+
+            {% if preview_table_name %}
+            <div class="database-preview-meta">
+                Previewing <strong>{{ preview_table_name }}</strong>{% if preview_row_count is not none %} | Total rows: <strong>{{ preview_row_count }}</strong> | Scroll inside the grid to browse the full table, with about <strong>20</strong> rows visible at one time{% endif %}
+            </div>
+            {% if preview_columns and preview_rows %}
+            <div class="database-preview-table-wrap">
+                <table class="database-preview-table">
+                    <thead>
+                        <tr>
+                            {% for column_name in preview_columns %}
+                            <th>{{ column_name }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in preview_rows %}
+                        <tr>
+                            {% for cell in row %}
+                            <td>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="warning">The selected table was found, but it has no rows to preview.</div>
+            {% endif %}
+            {% else %}
+            <p class="hint">Choose a table and click <strong>Preview Table</strong> to inspect the current SQL data.</p>
+            {% endif %}
+        </section>
+
+        <div class="links">
+            <a href="/">Configuration</a>
+            <a href="/health">App health</a>
+            <a href="/sql/health">SQL health</a>
+        </div>
+                </div>
+           
+           
+           
+           
+           
+           
+            </details>
+
+
+
+       <!--    hidden -->
+
+            </div>
+
+        </div>
+        {% if message or logs %}
+        <section class="terminal-panel">
+                {% if message %}
+                <div class="message">{{ formatted_message_html | safe }}</div>
+                {% endif %}
+
+                {% if logs %}
+                <section class="logs">
+                    <h2>Logs</h2>
+                    <ul>
+                        {% for log in logs %}
+                        <li class="{% if log.message.startswith('Deleted ') %}log-delete{% elif log.level == 'NOTICE' %}log-notice{% elif log.level == 'SUCCESS' %}log-success{% elif log.level == 'WARNING' %}log-warning{% elif log.level == 'ERROR' %}log-error{% else %}log-info{% endif %}">[{{ log.timestamp }}] [{{ log.level }}] {{ log.message }}</li>
+                        {% endfor %}
+                    </ul>
+                </section>
+                {% endif %}
+        </section>
+        {% endif %}
+    </main>
+    <script>
+        const duplicateUploadToast = document.getElementById("duplicate-upload-toast");
+        if (duplicateUploadToast) {
+            window.setTimeout(function () {
+                duplicateUploadToast.remove();
+            }, 100);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overstock Deep Flow Diagram</title>
+  <style>
+    :root {
+      --bg: #f7f2e8;
+      --panel: #fffdf9;
+      --ink: #1f2937;
+      --muted: #5d6674;
+      --line: #dccfb8;
+      --accent: #9a3412;
+      --accent-2: #234f6d;
+    }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(154, 52, 18, 0.08), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(35, 79, 109, 0.08), transparent 28%),
+        var(--bg);
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 20px 56px;
+    }
+    .hero {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 28px;
+      box-shadow: 0 16px 44px rgba(79, 62, 31, 0.08);
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: 42px;
+      color: var(--accent);
+    }
+    .intro {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 820px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 20px;
+      box-shadow: 0 10px 24px rgba(79, 62, 31, 0.05);
+    }
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      color: var(--accent-2);
+    }
+    .card p {
+      margin: 0 0 14px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    .card a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .note {
+      margin-top: 24px;
+      padding: 16px 18px;
+      background: #fff6eb;
+      border-left: 4px solid var(--accent);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Overstock Deep Flow Diagram</h1>
+      <p class="intro">This folder is the full documentation set for the live Overstock runtime. It includes a technical deep-dive, a staff-friendly version, and a giant master flow that connects the user, routes, folders, Python code, SQL tables, and export outputs.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Technical Deep Flow</h2>
+        <p>Detailed explanation of runtime flow, developer flow, folder purpose, and SQL stage meaning.</p>
+        <a href="Overstock_Deep_Flow.html">Open Technical Deep Flow HTML</a>
+      </article>
+
+      <article class="card">
+        <h2>Staff User Flow</h2>
+        <p>Simple non-technical version focused on what staff clicks, what each step means, and where results go.</p>
+        <a href="Staff_User_Flow.html">Open Staff User Flow HTML</a>
+      </article>
+
+      <article class="card">
+        <h2>Master Diagram</h2>
+        <p>One large visual map covering launcher, routes, processors, folders, SQL tables, duplicate staging, and exports.</p>
+        <a href="master_flow.html">Open Master Diagram</a>
+      </article>
+    </section>
+
+    <div class="note">
+      Folder name requested: <strong>DEEP FLOW DIAGRAM</strong>.
+    </div>
+  </div>
+</body>
+</html>

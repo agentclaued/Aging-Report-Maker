@@ -1,0 +1,7 @@
+{
+  "code": "amazonaccounts",
+  "display_name": "Amazon Accounts",
+  "sql_database": "AmazonAccountsDB",
+  "report_workflow_ready": false,
+  "notes": "File-only Amazon status processing. Uploads are normalized into output/amazonaccounts/ without using SQL Server. The first three status sheets use the local amazon_status_style_template.xlsx formatting; Amazon report values remain pending sample rules."
+}

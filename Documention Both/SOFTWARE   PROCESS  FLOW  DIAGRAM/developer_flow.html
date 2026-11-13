@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overstock Developer Flow</title>
+  <style>
+    :root {
+      --bg: #eef4f3;
+      --card: #fbfefd;
+      --ink: #13212b;
+      --muted: #51606b;
+      --accent: #155e75;
+      --line: #c9d9d7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+      background:
+        radial-gradient(circle at top right, rgba(21, 94, 117, 0.1), transparent 35%),
+        linear-gradient(180deg, #f5fbfa 0%, var(--bg) 100%);
+      color: var(--ink);
+    }
+
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(19, 33, 43, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .meta {
+      margin: 0 0 24px;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    .mermaid {
+      overflow-x: auto;
+    }
+
+    .fallback {
+      margin-top: 18px;
+      font-size: 0.95rem;
+    }
+
+    a {
+      color: var(--accent);
+    }
+  </style>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "base",
+      themeVariables: {
+        primaryColor: "#e8f4f5",
+        primaryTextColor: "#13212b",
+        primaryBorderColor: "#155e75",
+        lineColor: "#52606d",
+        secondaryColor: "#edf7f7",
+        tertiaryColor: "#fbfefd",
+        fontFamily: "Palatino Linotype, Book Antiqua, Palatino, serif"
+      },
+      flowchart: {
+        curve: "basis",
+        htmlLabels: true
+      }
+    });
+  </script>
+</head>
+<body>
+  <main>
+    <section class="card">
+      <div class="meta">Software Process Flow Diagram</div>
+      <h1>Overstock Developer Flow</h1>
+      <p>Process name: Overstock Data Processing Workflow</p>
+      <p>This diagram shows the technical request lifecycle across FastAPI routes, file staging, pandas processing, SQL execution, duplicate management, logging, and error handling.</p>
+
+      <div class="mermaid">
+flowchart TD
+    A([Start]) --> B[Frontend renders Overstock-only dashboard]
+    B --> C[User selects step and submits form]
+    C --> D{Route type}
+
+    D -->|Step 01 upload| E[POST /process/step-01]
+    D -->|SQL / summary action| H[POST to step-specific process endpoint]
+
+    E --> J[FastAPI validates request and selected company code]
+    H --> J
+
+    J --> K[build_services loads Overstock profile and runtime config]
+    K --> L[Repository ensures SQL Server database is available]
+    L --> M{Request category}
+
+    M -->|Step 01| N[Save upload to temp storage]
+    N --> O[InquiryProcessor reads file into pandas DataFrame]
+    O --> P[Normalize SQL-safe column names]
+    P --> Q[Apply company aliases and required-column validation]
+    Q --> R[Prepare derived columns like Ndatee, pay_day, and Cclaim]
+    R --> S[Write STEP_01_NORMALIZED_INQUIRY.xlsx]
+    S --> T[Upload normalized rows into step_01_inquiry_rows]
+    T --> U[Run SQL script to create CR, IN, and DB split tables]
+    U --> V[Log status and append history event]
+
+    M -->|SQL / summary action| AR[Execute step-specific SQL script through repository]
+    AR --> AS[Read target table counts or execution messages]
+    AS --> AT[Log status and append history event]
+
+
+    V --> AZ[Render HTML response with success or failure message]
+    AT --> AZ
+
+    AZ --> BA{Exception raised anywhere?}
+    BA -->|No| BB([End])
+    BA -->|Yes| BC[Catch exception, log error, append history, return error response]
+    BC --> BB
+      </div>
+
+      <p class="fallback">Source Mermaid file: <a href="./developer_flow.mmd">developer_flow.mmd</a></p>
+    </section>
+  </main>
+</body>
+</html>

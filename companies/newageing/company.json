@@ -1,0 +1,7 @@
+{
+  "code": "newageing",
+  "display_name": "New Agening",
+  "sql_database": "",
+  "report_workflow_ready": false,
+  "notes": "File-only comparison of two Full Agening workbooks by Ref#. The current workbook rows missing from the old workbook are downloaded in one Full Agening sheet."
+}

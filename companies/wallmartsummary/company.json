@@ -1,0 +1,7 @@
+{
+  "code": "wallmartsummary",
+  "display_name": "Wal Mart Summary",
+  "sql_database": "WallMartSummary",
+  "report_workflow_ready": false,
+  "notes": "Active Wal Mart Summary profile using Python file-only report calculations and the approved Wal Mart workbook template; SQL Server is not used by the upload/report flow."
+}

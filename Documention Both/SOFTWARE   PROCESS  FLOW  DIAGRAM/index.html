@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overstock Software Process Flow Diagrams</title>
+  <style>
+    :root {
+      --bg: #f3efe7;
+      --card: rgba(255, 253, 248, 0.9);
+      --ink: #1d2730;
+      --muted: #57636f;
+      --accent: #9a3412;
+      --accent-2: #0f766e;
+      --line: #ddd3c4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(154, 52, 18, 0.12), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(15, 118, 110, 0.1), transparent 30%),
+        linear-gradient(180deg, #f9f4ec 0%, var(--bg) 100%);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px 56px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 0.98;
+    }
+
+    .intro {
+      max-width: 760px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 1.05rem;
+      margin-bottom: 28px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 20px 45px rgba(29, 39, 48, 0.08);
+      backdrop-filter: blur(6px);
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.4rem;
+    }
+
+    p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+      background: var(--accent-2);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+    }
+
+    a.secondary {
+      background: #ffffff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Overstock Software Process Flow Diagrams</h1>
+    <p class="intro">This package contains separate user and developer views of the same Overstock processing workflow. The user flow highlights screens, actions, and visible outcomes. The developer flow traces FastAPI requests, file processing, SQL activity, duplicate handling, and response generation.</p>
+
+    <section class="grid">
+      <article class="card">
+        <div class="eyebrow">Diagram 1</div>
+        <h2>User Flow</h2>
+        <p>A clean, non-technical flow for product documentation, training, and QA walkthroughs.</p>
+        <div class="links">
+          <a href="./user_flow.html">Open HTML</a>
+          <a class="secondary" href="./user_flow.mmd">Open Mermaid</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="eyebrow">Diagram 2</div>
+        <h2>Developer Flow</h2>
+        <p>A technical flow for handoff, backend tracing, internal validation, and support analysis.</p>
+        <div class="links">
+          <a href="./developer_flow.html">Open HTML</a>
+          <a class="secondary" href="./developer_flow.mmd">Open Mermaid</a>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

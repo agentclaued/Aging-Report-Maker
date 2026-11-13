@@ -1,0 +1,28 @@
+AMAZON ACCOUNTS — WORKFLOW STRUCTURE
+
+INPUT
+  Upload Amazon account/type workbook data.
+
+PREPARATION
+  Uploaded rows
+    |
+    +--> Read Acct and Ref Type as the source of truth
+    +--> Preserve source rows in Master Aging
+    +--> Classify account/type rows for AM9285, AM9286, and ME9145
+
+OUTPUT
+  Amazon Status Summary YYYY-MM-DD HH-MM-SS.xlsx
+    |
+    +--> DB's Status
+    +--> Invoice's Status
+    +--> CR's Status
+    +--> Master Aging
+    +--> <Acct>_Invoices, <Acct>_DBs, and <Acct>_CRs when rows exist
+
+RULES
+  - File-only processing; no SQL Server.
+  - DB rows: Ref Type = DB; group by Acct, Order#, and Date year.
+  - Invoice rows: Ref Type = IN; group by Acct and Date year.
+  - CR rows: Ref Type = CR; group by Acct and Date year.
+  - Empty account/type sheets and zero-total status sections are omitted.
+  - Workbook metadata Creator and Last Modified By: AnsSys & openpyxl.

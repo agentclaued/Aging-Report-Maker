@@ -1,0 +1,29 @@
+WALL MART SUMMARY — WORKFLOW STRUCTURE
+
+INPUT
+  Upload one Wal Mart inquiry workbook.
+  Required business columns:
+    Acct | Div | Name | Ref# | Date | Due Date | Order#
+    Current | 1-30 Days | 31-60 Days | 61-90 Days | Over 90 Days
+    Claim# | Comment
+
+PREPARATION
+  Upload rows
+    |
+    +--> Preserve original business columns and extra columns
+    +--> Create / refresh Ref Type from Ref# (IN, DB, or CR)
+    +--> Create / refresh Total from all ageing buckets
+    +--> Prepare Date and Due Date as MM/DD/YYYY
+
+OUTPUT
+  WALL_MART_STATUS_SUMMARY.xlsx
+    |
+    +--> WallMartSummary_Sheet: prepared uploaded rows
+    +--> Invoices_Status: approved invoice status layout
+    +--> DBs_Status: approved open-aging DB status layout
+
+RULES
+  - File-only processing; the upload/report route does not use SQL Server.
+  - Status totals include WC9085, WA9085, SA9200, and WM9263 only.
+  - Generated source-data sheets are normal Excel Tables.
+  - Workbook metadata Creator and Last Modified By: AnsSys & openpyxl.

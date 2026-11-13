@@ -1,0 +1,338 @@
+REGULAR ACCOUNTS — PENDING XLSX WORKFLOW STRUCTURE
+Status: Person dropdown extraction and report download are active. No SQL is used.
+
+INPUT
+  User selects: Marketplace -> Regular Accounts
+  User sees one Regular Accounts step box:
+
+      Upload Regular Accounts workbook
+      +-----------------------------------------------------------------------+
+      | File (.xlsx)  Selected: Ageing 08-18-2026.xlsx | Person Name         |
+      |                                                 | [ Select Person ▼ ] |
+      |                                                                       |
+      | [ Process ]                                                           |
+      +-----------------------------------------------------------------------+
+
+  Layout rule:
+      - File selection/status and Person Name dropdown use two columns in one row.
+      - Process button is at the lower-left of the same step box.
+      - When the user chooses an XLSX file, extraction starts automatically.
+      - The Person Name dropdown stays disabled while the workbook is read, then enables when names are found.
+      - After a Person Name is selected, Process creates and downloads the report.
+
+WORKBOOK DISCOVERY
+  Uploaded workbook
+      |
+      +--> Select worksheet named: Full Ageing
+      |
+      +--> Read from the top of the worksheet
+              |
+              +--> Ignore / skip the first 2 or 3 rows when they are not headers
+              |
+              +--> Continue checking rows until the true header row is found
+                      |
+                      +--> Required header: Assigned Person
+                      +--> Required header: Acct
+
+DATA PREPARATION
+  Rows below the detected header row
+      |
+      +--> Use Assigned Person and Acct
+      |
+      +--> Select unique Assigned Person values
+      |
+      +--> For each person, select unique Acct values
+      |
+      +--> Count unique Acct values for that person
+      |
+      +--> Build one dropdown entry per Assigned Person
+              |
+              +--> Populate the Person Name dropdown below the workbook upload
+
+REGULAR ACCOUNTS DROPDOWN
+  Display format:
+
+      {Person Name} @ {count(unique Acct values)}
+
+  Example:
+
+      Ahmed @18
+      Sara @7
+
+  Meaning:
+      The count shown beside each person is derived from the Full Ageing rows
+      after header detection. Each Assigned Person is listed once and repeated
+      rows for the same Assigned Person + Acct combination count once.
+
+  After a person is selected:
+      Show only the selected dropdown value, for example: Ahmed @18
+      Do not show an Acct Summary table, individual Acct rows, or a separate total.
+
+REGULAR ACCOUNTS REPORT — LIVING ASCII TEMPLATE
+
+  A3: {Person Name}
+  (Show the name only; do not show a Selected Person label.)
+
+  FOLLOW-UP ENTRIES
+  +-----------+-------------------+-------------+----------+------------+------------+----------------+-------------+------------+------------------+
+  | Acct      | Name              | Ref#        | Ref Type | Date       | Due Date   | Order#         | Total       | Claim#     | Status           |
+  +-----------+-------------------+-------------+----------+------------+------------+----------------+-------------+------------+------------------+
+  | {Acct}    | {Name}            | {Ref#}      | {Type}   | {Date}     | {Due Date} | {Order#}       | {Total}     | {Claim#}   | {Status}         |
+  | {Acct}    | {Name}            | {Ref#}      | {Type}   | {Date}     | {Due Date} | {Order#}       | {Total}     | {Claim#}   | {Status}         |
+  +-----------+-------------------+-------------+----------+------------+------------+----------------+-------------+------------+------------------+
+
+  FILTER LOGIC
+
+  Full Ageing master rows
+      |
+      +--> Assigned Person = selected person
+      |
+      +--> Status is NOT blank
+      |
+      +--> Write matching rows to FOLLOW-UP ENTRIES
+      |
+      +--> Preserve every original Full Ageing column, header wording, column
+           order, and cell value, including Status
+
+ACCOUNT DETAIL SHEETS OUTPUT (ASCII TEMPLATE)
+
+  Selected Person rows from Full Ageing
+      |
+      +--> Select distinct Acct values
+      |
+      +--> Create one worksheet for each Acct
+      |
+      +--> Write every selected-person row for that Acct into its worksheet
+      |
+      +--> Preserve every original Full Ageing column, header wording, column
+           order, and cell value, including Status
+
+  Example:
+
+      Selected Person: Ahmed
+      Distinct Acct values: AC1001, AC2002
+
+      +--> Sheet: AC1001
+      |    Acct | Name | Ref# | Ref Type | Date | Due Date | Order# | Total | Claim# | Comment | Status
+      |    AC1001 rows only
+      |
+  +--> Sheet: AC2002
+           Acct | Name | Ref# | Ref Type | Date | Due Date | Order# | Total | Claim# | Comment | Status
+           AC2002 rows only
+
+INV SUMMARY — ACTIVE LOGIC
+
+  Full Ageing master rows
+      |
+      +--> Assigned Person = selected person
+      |
+      +--> Ref# contains IN (`%IN%`)
+      |
+      +--> Read Date and keep its year only
+      |
+      +--> Select DISTINCT year values from Date
+      |
+      +--> For each year: sum Total for IN rows in that year
+      |
+      +--> Write the year headings on row 3 and matching dollar totals on row 2:
+
+          {Person Name} | IN | {2020 Total} | {2021 Total} | ...
+          ACCOUNT HOLDER |    | 2020         | 2021         | ...
+
+      +--> Group rows by Acct
+      |
+      +--> Sum the IN Total values into ageing buckets for each Acct
+      |
+      +--> Write one account row to INV SUMMARY:
+
+          Acct | Current | 1-30 Days | 31-60 Days | 61-90 Days | Over 90 Days | Total | CR
+
+      |
+      +--> Add Grand Total across all IN account rows
+
+DB'S SUMMARY — PROPOSED ASCII LOGIC (PENDING YOUR CORRECTION)
+
+  Full Ageing master rows
+      |
+      +--> Assigned Person = selected person
+      |
+      +--> Ref# contains DB (`%DB%`)
+      |
+      +--> Group rows by Acct
+      |
+      +--> Sum the DB Total values into ageing buckets for each Acct
+      |
+      +--> Write one account row to DB'S SUMMARY:
+
+          Acct | Current | 1-30 Days | 31-60 Days | 61-90 Days | Over 90 Days | Total
+
+      |
+      +--> Add Grand Total across all DB account rows
+
+  Ageing bucket rule:
+      Use existing Full Ageing ageing columns when present; otherwise calculate
+      Current / 1-30 / 31-60 / 61-90 / Over 90 from Due Date.
+
+DB'S SUMMARY — ACTIVE LOGIC
+
+  Row 2: {Person Name} | DB | Date-year Total values
+  Row 3: ACCOUNT HOLDER | distinct Date years
+  Row 6: DB'S BY AGEING
+  Row 9: Row Labels | Ref Type | Sum of Current | Sum of 1-30 Days |
+         Sum of 31-60 Days | Sum of 61-90 Days | Sum of Over 90 Days | Sum of Total
+  Row 19: Grand Total
+  Row 21: DB'S BY REASON
+  Row 24: Order# | Ref Type | Sum of Current | Sum of 1-30 Days |
+          Sum of 31-60 Days | Sum of 61-90 Days | Sum of Over 90 Days | Sum of Total
+  Row 67: Grand Total
+
+  DB'S BY AGEING:
+    Ref# contains DB → group by Acct → sum ageing columns and Total.
+
+  DB'S BY REASON:
+    Ref# contains DB → group by distinct Order# → write each Order# to Row Labels.
+    For each Order# group, sum Current, 1-30 Days, 31-60 Days, 61-90 Days,
+    Over 90 Days, and Total. The final Grand Total row sums each amount column.
+
+REPORT DOWNLOAD
+
+  Process
+      |
+      +--> Create selected-person report workbook
+      |
+      +--> Browser downloads: {Person Name} {Uploaded File Name}.xlsx
+
+ACTIVE REPORT RULES
+  - Every generated XLSX workbook across Wall Mart Summary, Amazon Accounts, and
+    Regular Accounts stores `AnsSys & openpyxl` as its Author/Creator and Last
+    Modified By document metadata.
+  - Total fallback rule: when Full Ageing has no `Total`
+    column, create a calculation Total from the ageing buckets. For each row scan
+    left to right: Current → 1-30 Days → 31-60 Days → 61-90 Days → Over 90 Days.
+    Use the first non-zero numeric value found. If more than one bucket has a
+    value, still use the leftmost non-zero value. If all five are blank or zero,
+    use 0. This calculation Total will feed report summaries and year totals.
+    The calculation Total feeds report summaries and year totals. It is also added
+    to generated AGEING SHEET, FOLLOW-UP ENTRIES, and account-detail sheets directly
+    left of `Current`; original uploaded source columns and values remain unchanged.
+  - INV SUMMARY uses Ref# containing `IN`. CR rows are reported separately in
+    `CR'S SUMMARY` using Ref Type exactly `CR`.
+  - INV SUMMARY row 2 totals are grouped by distinct Date year from selected-person
+    IN rows; row 3 displays the matching unique years.
+  - INV SUMMARY uses the reference workbook layout: blue year block in rows 2-3,
+    `INV BY AGEING` title at B5, ageing table starting on row 8, reference-style
+    borders, widths, fonts, and accounting currency display.
+  - INV SUMMARY, CR'S SUMMARY, and DB'S BY AGEING keep Row 4 and Row 6 blank;
+    use Row 5 for the ageing title; and use Row 7 for: Acct, Name, Ref Type,
+    Sum of Current, Sum of 1-30 Days, Sum of 31-60 Days, Sum of 61-90 Days,
+    Sum of Over 90 Days, and Sum of Total. INV SUMMARY also has TERMS# and SALEMAN
+    after Sum of Total. `INV BY AGEING` is merged from B5 through H5.
+  - `INV BY AGEING` and the complete Row 8 table header use dark blue fill with
+    bold white text.
+  - For each INV SUMMARY account row, match `Acct` with `Account Analyst List`
+    `Acct`. Copy `Terms` to `TERMS#` and `SLM` to `SALEMAN`; leave either value
+    blank when that account is not found in the list.
+  - DB'S SUMMARY uses Ref# containing `DB`.
+  - FOLLOW-UP ENTRIES includes only nonblank Status rows.
+  - Account Detail Sheets include all selected-person rows for each distinct Acct.
+  - AGEING SHEET, FOLLOW-UP ENTRIES, and Account Detail Sheets retain all source
+    columns, original headings/order, and values; no source column is renamed or dropped.
+  - Total, Current, 1-30 Days, 31-60 Days, 61-90 Days, and Over 90 Days display
+    as dollar currency values with `$` signs; source numeric values are unchanged.
+  - All report sheets keep normal Excel gridlines visible; no blank PDF/print-style view.
+  - Every generated Date and Due Date value displays in Excel as MM/DD/YYYY (example:
+    08/18/2026).
+  - FOLLOW-UP ENTRIES, AGEING SHEET, and every Account Detail Sheet are normal Excel
+    Tables. Users can select a table and use Excel Insert → PivotTable for calculations.
+  - INV SUMMARY, CR'S SUMMARY, and DB'S BY AGEING use ageing headers: Acct, Name,
+    Ref Type, Sum of Current, Sum of 1-30 Days, Sum of 31-60 Days, Sum of 61-90 Days,
+    Sum of Over 90 Days, and Sum of Total. DB'S BY REASON headers are: Order#, Ref Type, Sum of Current,
+    Sum of 1-30 Days, Sum of 31-60 Days, Sum of 61-90 Days, Sum of Over 90 Days, and Sum of Total.
+  - INV SUMMARY, CR'S SUMMARY, and DB'S SUMMARY have no frozen rows or columns.
+  - All summary sheets show the Ref Type in the top light-blue box and `Year` beneath it.
+    Their ageing titles use title case, and each PivotTable Grand Total row uses the
+    `Dark Blue, Text 2, Lighter 60%` fill (#B8CCE4) with bold black text.
+  - DB'S BY REASON Order# values are bold in every generated report.
+  - INV SUMMARY TERMS# and SALEMAN values include the first data row and use the
+    same PivotTable header style as the Sum of Total column.
+  - Summary top year totals use Excel formulas linked to AGEING SHEET. The ageing summary
+    values now come from native Excel PivotTables sourced from AGEING SHEET. INV CR is
+    calculated as -ABS(SUM(CR Total)) per Acct where it is included outside the PivotTable.
+    CR source rows are identified only by Ref Type equal to CR.
+  - After the report is saved, hidden Microsoft Excel on the app-host PC creates a native
+    `DB'S BY REASON` PivotTable inside `DB'S SUMMARY`, below DB'S BY AGEING. Rows = Order# then
+    Ref Type (DB only), and Values = Sum of Current, 1-30 Days,
+    31-60 Days, 61-90 Days, Over 90 Days, and Total.
+  - The existing top yearly blocks and ageing titles stay unchanged. The interactive native
+    PivotTables replace the summary data rows at column A. INV SUMMARY, CR'S SUMMARY, and
+    DB'S BY AGEING show Acct plus Current, 1-30 Days, 31-60 Days, 61-90 Days,
+    Over 90 Days, then Total; they show IN, CR, and DB rows only.
+    DB'S BY REASON displays Order# then Ref Type, with DB rows only.
+
+CURRENT DATA FLOW OUTLINE
+
+PRE-DOWNLOAD PIVOTTABLE PROCESS (REGULAR ACCOUNTS ONLY)
+|
++-- Save selected-person report XLSX
+|
++-- Start hidden Excel process on the app-host PC
+|   |
+|   +-- Open the saved report
+|   +-- Add/update INV SUMMARY, CR'S SUMMARY, and DB'S SUMMARY PivotTables
+|   +-- Save the same XLSX and close Excel
+|
++-- Browser auto-downloads the finished XLSX
+
+Wall Mart Summary and Amazon do not use this PivotTable process.
+
+RAW WORKBOOK
+|
++-- Full Ageing: Assigned Person, Acct, Ref#, Date, Due Date, Order#, Total (if present),
+|   Current, 1-30 Days, 31-60 Days, 61-90 Days, Over 90 Days, Comment, Status
+|
++-- Account Analyst List: Acct, Terms, SLM
+
+TOTAL FALLBACK RULE
+|
++-- If Total does not exist, scan Current → 1-30 Days → 31-60 Days →
+|   61-90 Days → Over 90 Days and use the first non-zero numeric value.
+|   If all are blank/zero, use 0. The generated report data sheets insert this
+|   Total immediately left of Current; original uploaded columns/values stay unchanged.
+
+USER SELECTS PERSON
+|
++-- Filter Full Ageing where Assigned Person = selected person.
+
+INV SUMMARY
+|
++-- Ref# contains IN → Date year totals using SUM(Total).
++-- INV BY AGEING → group by Acct; sum each ageing bucket and Total.
++-- INV SUMMARY Acct Row Labels and every Grand Total row cell are bold.
++-- CR → Ref Type = CR; group by Acct; SUM(Total).
++-- Acct lookup: Account Analyst List Terms → TERMS#; SLM → SALEMAN.
+
+CR'S SUMMARY
+|
++-- Ref Type = CR → Date year totals using SUM(Total).
++-- CR BY AGEING → group by Acct; show Acct | ageing values | Total.
+
+DB'S SUMMARY
+|
++-- Ref# contains DB → Date year totals using SUM(Total).
++-- DB'S BY AGEING → group by Acct; sum each ageing bucket and Total.
++-- DB'S BY AGEING Grand Total is written immediately below the final Acct row.
++-- DB'S BY AGEING and DB'S BY REASON Row Labels are bold; every Grand Total row
+|   cell is bold.
++-- DB'S BY REASON → group by distinct Order#; Order# → Row Labels; sum Current,
+|   1-30 Days, 31-60 Days, 61-90 Days, Over 90 Days, and Total. Its Grand Total
+|   sums every amount column and is written immediately below the final Order# row.
+
+FOLLOW-UP ENTRIES
+|
++-- Selected-person rows where Status is not blank; preserve source data.
+
+AGEING SHEET / ACCOUNT DETAIL SHEETS
+|
++-- AGEING SHEET: all selected-person rows.
++-- Account detail: one sheet per distinct Acct, containing its selected-person rows.
++-- Preserve source data; add calculation Total before Current only when source Total is missing.

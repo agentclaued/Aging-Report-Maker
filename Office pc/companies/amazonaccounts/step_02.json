@@ -1,0 +1,9 @@
+{
+  "sheet_aliases": {},
+  "skiprows": {},
+  "farooq_column_aliases": {},
+  "po_details_column_aliases": {},
+  "required_columns": {
+    "po_details": []
+  }
+}

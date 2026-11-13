@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wal Mart Summary Workflow Documentation</title>
+    <style>
+        :root {
+            --bg: #f3efe6;
+            --paper: #fffdf8;
+            --ink: #1e293b;
+            --muted: #5b6472;
+            --line: #d7cfbf;
+            --accent: #8c4b2f;
+            --accent-soft: #f7e4d8;
+            --good: #2f6b45;
+            --warn: #9b5c00;
+            --card: #fffaf0;
+            --shadow: 0 14px 34px rgba(43, 33, 16, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            background:
+                radial-gradient(circle at top left, #fdf7ea 0, transparent 28%),
+                linear-gradient(180deg, #f6f1e7 0%, #efe8da 100%);
+            color: var(--ink);
+        }
+
+        .page {
+            max-width: 1280px;
+            margin: 24px auto;
+            padding: 28px;
+        }
+
+        .hero,
+        .section,
+        .note-card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            border-radius: 18px;
+        }
+
+        .hero {
+            padding: 28px;
+            margin-bottom: 22px;
+        }
+
+        h1, h2, h3 {
+            margin-top: 0;
+            color: #221b16;
+        }
+
+        h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 14px;
+            border-bottom: 2px solid var(--accent-soft);
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            line-height: 1.6;
+            color: var(--ink);
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .badge {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            border: 1px solid #e8c4b4;
+            color: #5f2f18;
+            font-size: 14px;
+        }
+
+        .section {
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+
+        .grid-2,
+        .grid-3 {
+            display: grid;
+            gap: 16px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .note-card {
+            padding: 18px;
+            background: var(--card);
+        }
+
+        .step-card {
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px;
+            background: #fffefb;
+        }
+
+        .step-tag {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: #f0e3c6;
+            color: #5d4422;
+            font-size: 12px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid var(--line);
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f6ecdb;
+        }
+
+        code {
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 0.95em;
+            background: #f6efe4;
+            padding: 1px 5px;
+            border-radius: 5px;
+        }
+
+        .mindmap {
+            overflow-x: auto;
+            padding-bottom: 12px;
+        }
+
+        .map-lane {
+            min-width: 1080px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            align-items: start;
+        }
+
+        .map-col h3 {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .map-box {
+            position: relative;
+            margin-bottom: 12px;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: #fff;
+        }
+
+        .map-box.source { background: #fff7ec; }
+        .map-box.transform { background: #f7f2ff; }
+        .map-box.table { background: #eef7ff; }
+        .map-box.output { background: #effbf2; }
+        .map-box.ui { background: #fff8fb; }
+
+        .arrow {
+            text-align: center;
+            font-size: 24px;
+            color: var(--accent);
+            margin: 2px 0 10px;
+        }
+
+        .status-good { color: var(--good); font-weight: 700; }
+        .status-warn { color: var(--warn); font-weight: 700; }
+
+        .footer {
+            padding: 16px 0 6px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        @media (max-width: 960px) {
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <section class="hero">
+            <h1>Wal Mart Summary Workflow Documentation</h1>
+            <p>This document explains how the current Wal Mart Summary FastAPI application works, using the live runtime structure in <code>app/main.py</code>, <code>app/workflow.py</code>, <code>app/adapters/company_loader.py</code>, and <code>templates/index.html</code>. It is written as an operational guide for business users, developers, and reviewers.</p>
+            <div class="badge-row">
+                <span class="badge">Runtime profile: <code>wallmartsummary</code></span>
+                <span class="badge">UI base: <code>templates/index.html</code></span>
+                <span class="badge">Main controller: <code>app/main.py</code></span>
+                <span class="badge">Transform engine: <code>app/workflow.py</code></span>
+                <span class="badge">Output folder: <code>output/</code></span>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>1. Executive Summary</h2>
+            <div class="grid-3">
+                <div class="note-card">
+                    <h3>Business Purpose</h3>
+                    <p>The app turns inquiry sheets into normalized SQL tables, then runs matching and reporting queries so Wal Mart Summary teams can review invoice linkage, credit application, PO status, unapplied values, and deduction reporting.</p>
+                </div>
+                <div class="note-card">
+                    <h3>Primary Runtime Pattern</h3>
+                    <p>Each workflow button on the template posts to a FastAPI endpoint. That endpoint validates or uploads files, prepares missing columns, writes master files into <code>output/</code>, refreshes SQL Server tables, and records a log/history message.</p>
+                </div>
+                <div class="note-card">
+                    <h3>Design Scope</h3>
+                    <p>The runtime is intentionally locked to a single company. No company switching logic is exposed in the UI, and <code>load_company_profile()</code> now loads the active configuration from <code>companies/wallmartsummary/</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. Runtime Architecture</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th>File</th>
+                        <th>What It Does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Company Profile</td>
+                        <td><code>app/adapters/company_loader.py</code></td>
+                        <td>Loads Wal Mart Summary JSON metadata and the Step 01 alias/required-column rules.</td>
+                    </tr>
+                    <tr>
+                        <td>UI Template</td>
+                        <td><code>templates/index.html</code></td>
+                        <td>Provides the one-page workflow screen, button layout, auto-run checkboxes, non-blocking duplicate-upload notification, logs panel, and download links.</td>
+                    </tr>
+                    <tr>
+                        <td>File Preparation</td>
+                        <td><code>app/workflow.py</code></td>
+                        <td>Reads files, normalizes column names, combines sheets, adds required helper columns, and writes combined Excel output.</td>
+                    </tr>
+                    <tr>
+                        <td>Request Controller</td>
+                        <td><code>app/main.py</code></td>
+                        <td>Defines routes, executes SQL scripts, syncs DataFrames to SQL Server, manages duplicate uploads, and returns template responses.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>3. Data Flow Mind Map</h2>
+            <p class="muted">This is a template-based visual map written in HTML and CSS. It follows the same flow the page exposes to the user.</p>
+            <div class="mindmap">
+                <div class="map-lane">
+                    <div class="map-col">
+                        <h3>Input Files</h3>
+                        <div class="map-box source"><strong>Step 01</strong><br>Inquiry file<br><code>.xlsx / .xls / .csv</code></div>
+                    </div>
+                    <div class="map-col">
+                        <h3>Transform Logic</h3>
+                        <div class="map-box transform">Normalize SQL-safe column names.<br>Apply company aliases.<br>Validate required columns.</div>
+                        <div class="map-box transform">Create missing helper columns where the runtime still needs them before typed SQL upload.</div>
+                        <div class="map-box transform">Combine same sheets across files.<br>Write master Excel outputs into <code>output/</code>.</div>
+                    </div>
+                    <div class="map-col">
+                        <h3>SQL Upload Tables</h3>
+                        <div class="map-box table"><code>step_01_inquiry_rows</code></div>
+                        <div class="map-box table"><code>step_02_farooq</code><br><code>step_02_po_details</code></div>
+                        <div class="map-box table"><code>step_03_payments_combined</code></div>
+                        <div class="map-box table"><code>combine_rows</code><br>batch/history tracking tables</div>
+                    </div>
+                    <div class="map-col">
+                        <h3>SQL Reporting / Match Outputs</h3>
+                        <div class="map-box output"><strong>Step 01A</strong><br><code>step_01a_cr_sheet</code><br><code>step_01a_in_sheet</code><br><code>step_01a_db_sheet</code></div>
+                        <div class="map-box output"><strong>Step 04</strong><br><code>step_04a_FullMatched</code><br><code>step_04b_order_not_matched</code><br><code>step_04c_qty_not_matched</code><br><code>step_04d_cost_not_matched</code><br><code>step_04e_total_not_matched</code></div>
+                        <div class="map-box output"><strong>Step 05-07A</strong><br><code>ndatee</code><br><code>unapplied</code><br><code>NO_CR_Number</code><br><code>Deductions_Summary</code><br><code>step_07_Credit_Applied_Sheet</code><br><code>Step_09A_Deductions_BreakDown</code><br><code>Credit_CrDedNet_Summary</code><br><code>Po_Status_Sum_Summary</code></div>
+                    </div>
+                    <div class="map-col">
+                        <h3>UI / Business Use</h3>
+                        <div class="map-box ui">Review transformed files through download buttons.</div>
+                        <div class="map-box ui">Use log panel to confirm row counts, messages, warnings, and SQL script status.</div>
+                        <div class="map-box ui">Use reporting tables for PO reconciliation, invoice-to-payment matching, unapplied credit analysis, and summary reporting.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>4. Template Section-by-Section UI Guide</h2>
+            <div class="grid-2">
+                <div class="step-card">
+                    <span class="step-tag">Header Area</span>
+                    <h3>Refresh Button</h3>
+                    <p><strong>Query / Action:</strong> JavaScript function <code>goHomeAndRefresh()</code> redirects the browser to the current runtime origin.</p>
+                    <p><strong>Purpose:</strong> Reload the workflow home page and refresh displayed message/log state.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-tag">Sticky Panel</span>
+                    <h3>Right-Side Workflow Buttons</h3>
+                    <p>These buttons are quick-launch triggers bound to forms already present on the page. They do not hold business logic themselves. They simply submit the related step form so the FastAPI endpoint can run.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-tag">Top Info</span>
+                    <h3>SQL Server, Database, App Path, Template Path</h3>
+                    <p><strong>Data Source:</strong> passed from <code>_render()</code> in <code>app/main.py</code>.</p>
+                    <p><strong>Purpose:</strong> show the current live runtime context and confirm the app is running in the intended Wal Mart Summary folder.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-tag">Company Lock</span>
+                    <h3>Readonly Company Field</h3>
+                    <p><strong>Value:</strong> <code>wallmartsummary</code>.</p>
+                    <p><strong>Purpose:</strong> confirms the sample is single-company only and prevents UI-level company switching.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-tag">Duplicate Handling</span>
+                    <h3>Non-Blocking Duplicate Uploads</h3>
+                    <p><strong>Query / Action:</strong> the normal Step 01 upload route continues without a duplicate-resolution stop.</p>
+                    <p><strong>Purpose:</strong> a repeated filename is reported in a top-right notification and the file is processed immediately.</p>
+                    <p><strong>Current runtime note:</strong> duplicate uploads are allowed. The existing Step 01 replacement behavior continues to govern the SQL results.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-tag">Logs Panel</span>
+                    <h3>Operational Feedback</h3>
+                    <p><strong>Purpose:</strong> shows success, warning, info, notice, and error messages from file processing and SQL execution. It is the main live feedback channel for row counts and query messages.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>5. Step-by-Step Workflow Documentation</h2>
+
+            <div class="step-card">
+                <span class="step-tag">Step 01</span>
+                <h3>Inquiry Upload and Normalization</h3>
+                <p><strong>Buttons / Endpoint:</strong> for <code>Wal Mart Summary</code>, <code>Process Wal Mart File</code> uses <code>/process/step-01</code>. It reads the uploaded file locally, validates the required columns, copies the approved Wal Mart workbook template, calculates the report in Python, and downloads the workbook immediately. It does not create, refresh, query, or run a stored procedure against SQL Server.</p>
+                <p><strong>Wal Mart calculation rules:</strong> required raw headers are <code>Acct</code>, <code>Div</code>, <code>Name</code>, <code>Ref#</code>, <code>Date</code>, <code>Due Date</code>, <code>Order#</code>, <code>Current</code>, <code>1-30 Days</code>, <code>31-60 Days</code>, <code>61-90 Days</code>, <code>Over 90 Days</code>, <code>Claim#</code>, and <code>Comment</code>. <code>Ref Type</code> is optional: Python creates or refreshes it from the case-insensitive <code>IN</code>, <code>DB</code>, or <code>CR</code> match in <code>Ref#</code>. The processor preserves every uploaded column in <code>WallMartSummary_Sheet</code>, including extras. It converts Excel serial dates such as <code>44548</code> in Date or Due Date to real <code>MM/DD/YYYY</code> values. It refreshes/creates <code>Total</code> as Current + 1–30 + 31–60 + 61–90 + Over 90 Days; these six money columns display with a <code>$</code> currency symbol in every output data sheet. The helper column is named <code>PaidStatus</code> and has no generic Paid value: it remains blank unless an explicit Unpaid or InvPaid rule applies. A blank Comment keeps every comment-based helper blank except InvYear. For IN rows, InvPaid requires a Comment that starts with one standalone Paid keyword, is not Paid Fully, and has no deduc wording; deduct anywhere sets Paid &amp; Fully Deduct. Dispute applies to IN and DB rows. DB status groups by <code>Acct</code>, distinct <code>Order#</code>, and year of <code>Date</code>. Write-up Sent accepts Write Up, Writeup, Write-up, Write  Up, or Write_up at the start, but excludes comments containing approval. The template's <code>No Record Found</code> column follows the No + Record comment rule.</p>
+                <p><strong>Company selection:</strong> the Marketplace selector keeps the same UI. <code>Wal Mart Summary</code>, <code>Amazon Accounts</code>, and <code>Regular Accounts</code> process files without opening a database connection. Wal Mart includes only WC9085, WA9085, SA9200, and WM9263 in status totals, using the uploaded <code>name</code> value as each account label. Rows with blank or unsupported <code>acct</code> values are preserved in the master detail sheet, shown as a red warning in the log, and omitted from status totals.</p>
+                <p><strong>Amazon account/type processing:</strong> every source sheet is read. The processor uses <code>Acct</code> and <code>Ref Type</code>, not source sheet names: <code>IN</code> creates <code>&lt;Acct&gt;_Invoices</code>, <code>DB</code> creates <code>&lt;Acct&gt;_DBs</code>, and <code>CR</code> creates <code>&lt;Acct&gt;_CRs</code>. It always creates these sheets for <code>AM9285</code>, <code>AM9286</code>, and <code>ME9145</code>.</p>
+                <p><strong>Amazon status sheet positions:</strong> sheets 0, 1, and 2 are in this exact order: <code>DB's Status</code>, <code>Invoice's Status</code>, and <code>CR's Status</code>. DB and Invoice use their Amazon-only status rules; CR remains ready for its future rule.</p>
+                <p><strong>Amazon Master Aging:</strong> sheet 3 is <code>Master Aging</code>. It contains every nonblank data row from every uploaded source sheet before any Amazon account or Ref Type filtering.</p>
+                <p><strong>Amazon status formatting:</strong> <code>DB's Status</code> copies the approved <code>DBs_Status</code> format. <code>Invoice's Status</code> and <code>CR's Status</code> copy the approved <code>Invoices_Status</code> format. The Amazon template retains formatting only; it does not copy Walmart values.</p>
+                <p><strong>Amazon download:</strong> <code>Process Amazon File</code> automatically downloads the completed workbook with the filename pattern <code>Amazon Status Summary YYYY-MM-DD HH-MM-SS.xlsx</code>.</p>
+                <p><strong>Amazon busy state:</strong> the process button keeps the browser-native download response and displays <code>Processing...</code> until the server has finished sending it. A server completion status check replaces the fixed reset timeout.</p>
+                <p><strong>Amazon DB status sample:</strong> <code>DB's Status</code> filters only <code>Ref Type=DB</code> rows, groups <code>Acct</code>, distinct <code>Order#</code>, and <code>YEAR(Date)</code>, then writes the summed <code>Total</code> under the dynamic year headings. <code>Write-up Sent</code> sums <code>Total</code> where <code>Comment</code> contains <code>MEMO</code> case-insensitively. <code>Dispute_Amount</code> is not included in the Amazon DB status layout.</p>
+                <p><strong>Amazon Invoice status:</strong> <code>Invoice's Status</code> filters <code>Ref Type=IN</code>, groups <code>Acct</code> and <code>YEAR(Date)</code>, and sums <code>Total</code> into the dynamic year columns and Total Amount. Its final <code>Paid @&lt;latest YYYY&gt;</code> column uses the latest Date year only, groups <code>Acct</code>, <code>Comment</code>, and year, then sums <code>Total</code> where Comment contains <code>Paid on</code>, a payment-number phrase, and digits. Small spelling errors such as <code>payemnt no</code> are accepted.</p>
+                <p><strong>Amazon CR status:</strong> <code>CR's Status</code> filters verified <code>Ref Type=CR</code> rows, the same rows written to <code>&lt;Acct&gt;_CRs</code>. It groups <code>Acct</code> and <code>YEAR(Date)</code>, sums <code>Total</code> into dynamic year columns and Total Amount, and leaves Status as a <code>-</code> placeholder.</p>
+                <p><strong>Amazon zero-total rule:</strong> do not render an account status section whose final <code>Total Amount</code> is <code>0.00</code>. The rule is independent of account position and applies to every Amazon status summary as it is added.</p>
+                <p><strong>Amazon account/type sheet rule:</strong> create an <code>&lt;Acct&gt;_Invoices</code>, <code>&lt;Acct&gt;_DBs</code>, or <code>&lt;Acct&gt;_CRs</code> worksheet only when filtered source rows exist. Empty account/type worksheets are omitted.</p>
+                <p><strong>Amazon status formatting cleanup:</strong> after the final visible account section, the processor removes all unused template rows and formatting. Empty accounts leave no title, table, spacer, or formatting footprint.</p>
+                <p><strong>Collapsed workflow tools:</strong> every workflow section below Full Report is placed inside <code>Expand Workflow Tools</code>, including runtime details, manual procedures and Proc Query, table export, preview, and configuration/health links.</p>
+                <p><strong>Input:</strong> one inquiry file in <code>.xlsx</code>, <code>.xls</code>, or <code>.csv</code> format.</p>
+                <p><strong>What the query/process is doing:</strong> the file is read into pandas, column names are normalized to SQL-safe names, WalMartSummary aliases are applied, required columns are validated, and helper fields are created before the dataset is written to SQL Server.</p>
+                <p><strong>New columns generated:</strong></p>
+                <ul>
+                    <li><code>Ndatee</code>: derived from the <code>order</code> field using characters 6 to 12 as a date token.</li>
+                    <li><code>pay_day</code>: total of aging buckets <code>current</code>, <code>col_1_30_days</code>, <code>col_31_60_days</code>, <code>col_61_90_days</code>, and <code>over_90_days</code>.</li>
+                    <li><code>Cclaim</code>: normalized claim key; when claim starts with <code>DB</code> or <code>CR</code>, the last 6 characters are used.</li>
+                </ul>
+                <p><strong>Primary SQL table generated:</strong> <code>step_01_inquiry_rows</code></p>
+                <p><strong>Output file generated:</strong> <code>output/STEP_01_NORMALIZED_INQUIRY.xlsx</code></p>
+                <p><strong>Automatic follow-up:</strong> after the SQL upload succeeds, the app runs <code>dbo.sp_WallMartSummary_db_and_inv_tabels</code>, <code>dbo.sp_WallMartSummary_gen_DBs_Status</code>, and <code>dbo.sp_WallMartSummary_Invoice_Status</code>, builds <code>LATEST_SQL_TABLES.xlsx</code>, and returns it as the browser download.</p>
+                <p><strong>Used for:</strong> all downstream CR/IN/DB splitting, invoice matching support, and date-based update logic.</p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-tag">Step 02 / Step 03 tables</span>
+                <h3>PO Details and Payment Tables</h3>
+                <p><strong>Current runtime note:</strong> the Step 02 and Step 03 upload routes (<code>/process/step-02</code>, <code>/process/step-03</code>) and their download routes were removed. The SQL tables <code>step_02_farooq</code>, <code>step_02_po_details</code>, and <code>step_03_payments_combined</code> are still read by the Step 04 to Step 07 SQL, but the application no longer loads them from a workbook upload.</p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-tag">Step 08</span>
+                <h3>DataBaseOptimization</h3>
+                <p><strong>Button / Endpoint:</strong> <code>step_08_DataBaseOptimization</code> → <code>/process/step-08-database-optimization</code></p>
+                <p><strong>What the query/process is doing:</strong> creates a special exception table for rows in payment data that do not have a CR number association.</p>
+                <p><strong>SQL table generated:</strong> <code>NO_CR_Number</code></p>
+                <p><strong>Used for:</strong> exception management and investigation of payment rows lacking CR references.</p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-tag">Deductions Summary</span>
+                <h3>Negative Total Deduction Reporting</h3>
+                <p><strong>Button / Endpoint:</strong> <code>Gen Deductions_Summary</code> → <code>/process/deductions-summary</code></p>
+                <p><strong>What the query/process is doing:</strong> rebuilds <code>Deductions_Summary</code> from negative total rows in <code>step_03_payments_combined</code>.</p>
+                <p><strong>SQL table generated:</strong> <code>Deductions_Summary</code></p>
+                <p><strong>Used for:</strong> deduction-category analysis and downstream summary reporting.</p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-tag">Step 06D02</span>
+                <h3>Applying CR Update</h3>
+                <p><strong>Button / Endpoint:</strong> <code>step6 D02 applying cr update</code> → <code>/process/step-06d02-applying-cr-update</code></p>
+                <p><strong>What the query/process is doing:</strong> executes the app-safe unapplied CR issue update query.</p>
+                <p><strong>Used for:</strong> correcting or updating CR issue logic after the unapplied dataset has been built.</p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-tag">Step 07A</span>
+                <h3>Three Summary Sections</h3>
+                <p><strong>Buttons / Endpoints:</strong></p>
+                <ul>
+                    <li><code>/process/step-07a-deduction-breakdown</code> → <code>Step_09A_Deductions_BreakDown</code></li>
+                    <li><code>/process/step-07a-credit-summary</code> → <code>Credit_CrDedNet_Summary</code></li>
+                    <li><code>/process/step-07a-po-status-summary</code> → <code>Po_Status_Sum_Summary</code></li>
+                    <li><code>/process/step-07a-summary</code> → rebuilds all three together</li>
+                </ul>
+                <p><strong>What the query/process is doing:</strong> creates reporting tables for deduction breakdown, gross/deduction/net pay summary, and PO status summary.</p>
+                <p><strong>Used for:</strong> dashboard-style management reporting.</p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-tag">Step 07</span>
+                <h3>Credit Applied Sheet</h3>
+                <p><strong>Button / Endpoint:</strong> <code>Run step_07_crApplied</code> → <code>/process/step-07</code></p>
+                <p><strong>What the query/process is doing:</strong> builds the credit-applied reporting sheet through SQL.</p>
+                <p><strong>SQL table generated:</strong> <code>step_07_Credit_Applied_Sheet</code></p>
+                <p><strong>Export availability:</strong> use <code>Build Latest Tables Workbook</code> for the workbook export; the separate applied-sheet export was removed.</p>
+                <p><strong>How it works:</strong> Step 07 builds the SQL source table first, then the export action converts that SQL output into the workbook-style sheet with the required visible-column, spacer-column, color, and totals layout rules.</p>
+                <p><strong>Important behavior:</strong> the app does not wait for a previously saved Step 07 xlsx file and merge that file later. The export action builds from SQL table data directly.</p>
+                <p><strong>Latest Tables relation:</strong> <code>Build Latest Tables Workbook</code> can run by itself and builds directly from the current SQL tables. It does not require the Step 07 export file to already exist in the folder.</p>
+                <p><strong>Used for:</strong> final review of how credits were applied to invoice activity.</p>
+            </div>
+
+        </section>
+
+        <section class="section">
+            <h2>7. Template Button Reference</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Visible Button</th>
+                        <th>Form / Route</th>
+                        <th>Primary Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Run Step 01 / Run &amp; Download Report</td><td><code>step-01-form</code> → <code>/process/step-01</code></td><td>Run Step 01 normalizes and uploads inquiry data only. Run &amp; Download Report also runs the control/DB/invoice procedures, then downloads <code>LATEST_SQL_TABLES.xlsx</code>.</td></tr>
+                    <tr><td>step_08_DataBaseOptimization</td><td><code>step-08-database-optimization-form</code> → <code>/process/step-08-database-optimization</code></td><td>Builds <code>NO_CR_Number</code>.</td></tr>
+                    <tr><td>Gen Deductions_Summary</td><td><code>deductions-summary-form</code> → <code>/process/deductions-summary</code></td><td>Builds deduction summary table.</td></tr>
+                    <tr><td>step6 D02 applying cr update</td><td><code>step-06d02-applying-cr-update-form</code> → <code>/process/step-06d02-applying-cr-update</code></td><td>Runs CR issue update query.</td></tr>
+                    <tr><td>Step 07A buttons</td><td><code>/process/step-07a-...</code></td><td>Build summary reporting tables.</td></tr>
+                    <tr><td>Run step_07_crApplied</td><td><code>step-07-form</code> → <code>/process/step-07</code></td><td>Builds credit applied sheet through <code>dbo.sp_hd9200_Gen_step_07_Credit_Applied_Sheet</code>.</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>8. Key Generated Columns and Why They Exist</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Created In</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>Ndatee</code></td><td>Step 01</td><td>Normalizes date information from inquiry order text for later matching.</td></tr>
+                    <tr><td><code>pay_day</code></td><td>Step 01</td><td>Aggregates aging-bucket values into one amount field.</td></tr>
+                    <tr><td><code>Cclaim</code></td><td>Step 01</td><td>Creates a cleaner claim key for CR/DB identification and joins.</td></tr>
+                    <tr><td><code>quantiy</code></td><td>Step 02</td><td>Preserves the spelling expected by current SQL logic even if the source says <code>quantity</code>.</td></tr>
+                    <tr><td><code>qxc</code></td><td>Step 02</td><td>Stores quantity multiplied by cost for financial comparison.</td></tr>
+                    <tr><td><code>Odatee</code></td><td>Step 02</td><td>Normalized PO order date field for matching logic.</td></tr>
+                    <tr><td><code>invoice_db_number</code></td><td>Step 02, Step 05, Step 06B</td><td>Serves as the Step 02 invoice-linking field across the PO-detail and DB-match flow.</td></tr>
+                    <tr><td><code>cr_issue</code></td><td>Step 02, Step 03</td><td>Stores CR-related issue status or later updates.</td></tr>
+                    <tr><td><code>db_number</code></td><td>Step 02, Step 03</td><td>Stores debit-number linkage.</td></tr>
+                    <tr><td><code>inv_db</code></td><td>Step 02, Step 03</td><td>Supports invoice/debit relationship tracking.</td></tr>
+                    <tr><td><code>Po_Count</code></td><td>Step 02, Step 04A</td><td>Supports PO-level grouping and status evaluation.</td></tr>
+                    <tr><td><code>Total_Invoice</code></td><td>Step 02, Step 04A</td><td>Stores PO-side invoice total for comparison.</td></tr>
+                    <tr><td><code>Total_Payment</code></td><td>Step 02, Step 03, Step 04A</td><td>Stores payment-side total for comparison and reporting.</td></tr>
+                    <tr><td><code>diff</code></td><td>Step 02, Step 04A</td><td>Difference between invoice-side and payment-side totals.</td></tr>
+                    <tr><td><code>po_status</code></td><td>Step 02, Step 04A</td><td>Final PO state used by the UI and summaries.</td></tr>
+                    <tr><td><code>Sum_Total</code></td><td>Step 03</td><td>Source-file grouped payment total used for payment review.</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>9. Operational Notes</h2>
+            <div class="grid-2">
+                <div class="note-card">
+                    <h3>Duplicate File Notification</h3>
+                    <p>The app checks existing source file names in SQL history for Steps 01, 02, and 03. A duplicate is allowed to proceed and a top-right notification identifies it; no duplicate-resolution choice is required.</p>
+                </div>
+                <div class="note-card">
+                    <h3>Auto-Run Toggles</h3>
+                    <p>Steps 01, 02, and 03 each have an auto-run checkbox. The preference is stored in browser local storage and submits the form immediately after file selection.</p>
+                </div>
+                <div class="note-card">
+                    <h3>Busy State Protection</h3>
+                    <p>The page switches to a busy mode on submit so users cannot accidentally trigger duplicate clicks while SQL or file processing is still running.</p>
+                </div>
+                <div class="note-card">
+                    <h3>Download Strategy</h3>
+                    <p>The template exposes download links for generated files and the latest-tables workbook export so users can validate transformed files and SQL output tables.</p>
+                </div>
+                <div class="note-card">
+                    <h3>Step 07 Workbook Merge</h3>
+                    <p>The separate Step 07 applied-sheet export was removed; <code>Build Latest Tables Workbook</code> is the workbook export.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>10. Recommended Business Reading of the Flow</h2>
+            <p>In business terms, the workflow starts by cleaning and structuring raw inquiry data into SQL-safe tables. Once those base tables exist, the later SQL steps classify the records into matched groups, mismatch groups, unapplied groups, credit-applied groups, and summary groups. The template is therefore not just a file-upload page; it is a staged reconciliation console.</p>
+            <p><span class="status-good">Best use:</span> run Step 01 first, then PO status and match audit steps, then exception or credit reporting steps, then Step 07, and finally build and download the Latest Tables workbook.</p>
+            <p><span class="status-warn">Important caution:</span> some buttons in Step 06 are marked as danger-zone actions in the template, which signals that they should be run only after the expected source tables have already been prepared.</p>
+        </section>
+
+        <div class="footer">
+            Prepared from the live WalMartSummary runtime codebase on 2026-07-28.
+        </div>
+    </main>
+</body>
+</html>

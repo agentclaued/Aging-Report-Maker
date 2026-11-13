@@ -1,0 +1,7 @@
+{
+  "code": "regularaccounts",
+  "display_name": "Regular Accounts",
+  "sql_database": "",
+  "report_workflow_ready": false,
+  "notes": "Serverless XLSX processing. The uploaded workbook is validated and packaged locally without SQL Server or account-specific transformation rules."
+}

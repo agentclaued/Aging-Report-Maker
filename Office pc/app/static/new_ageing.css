@@ -1,0 +1,31 @@
+/* New Ageing finder styles, scoped to #na-tool so they cannot affect the rest of the app. */
+#na-tool{--card:#fff;--tx:#1c2430;--mut:#66707d;--ac:#e8310f;--ok:#1a7f37;--bd:#dde1e7;color:var(--tx);font:14px/1.4 system-ui,Segoe UI,sans-serif;margin-top:14px}
+#na-tool *{box-sizing:border-box}
+#na-tool .card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:14px}
+#na-tool .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){#na-tool .row{grid-template-columns:1fr}}
+#na-tool .drop{border:2px dashed var(--bd);border-radius:10px;padding:22px 12px;text-align:center;cursor:pointer;color:var(--mut)}
+#na-tool .drop.on{border-color:var(--ac)}
+#na-tool .drop.has{border-style:solid;border-color:var(--ok);color:var(--tx)}
+#na-tool .drop b{display:block;color:var(--tx);margin-bottom:4px}
+#na-tool .fn{word-break:break-all;font-size:13px}
+#na-tool input[type=file]{display:none}
+#na-tool label{display:inline;margin:0 6px 0 0;font-size:13px;font-weight:400;color:var(--mut);flex:none}
+#na-tool select,#na-tool input[type=text]{font:inherit;padding:6px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--card);color:var(--tx)}
+#na-tool button{font:inherit;padding:8px 16px;border-radius:6px;border:1px solid var(--ac);background:var(--ac);color:#fff;cursor:pointer;width:auto}
+#na-tool button:disabled{opacity:.45;cursor:not-allowed}
+#na-tool button.sec{background:transparent;color:var(--ac)}
+#na-tool .opts{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:12px 0}
+#na-tool .stats{display:flex;gap:12px;flex-wrap:wrap}
+#na-tool .stat{flex:1;min-width:130px;border:1px solid var(--bd);border-radius:8px;padding:10px}
+#na-tool .stat span{display:block;color:var(--mut);font-size:12px}
+#na-tool .stat b{font-size:22px}
+#na-tool .stat.new b{color:var(--ok)}
+#na-tool .tw{overflow:auto;max-height:520px;border:1px solid var(--bd);border-radius:8px}
+#na-tool table{border-collapse:collapse;width:100%;font-size:12.5px}
+#na-tool th,#na-tool td{padding:5px 8px;border-bottom:1px solid var(--bd);white-space:nowrap;text-align:left}
+#na-tool th{position:sticky;top:0;background:var(--card);z-index:1}
+#na-tool td.n{text-align:right}
+#na-tool #na-msg{color:var(--mut);margin-top:8px}
+#na-tool #na-msg.err{color:#d1242f}
+#na-tool .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}

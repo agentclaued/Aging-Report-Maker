@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overstock Master Deep Flow</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4efe5;
+      --panel: #fffdf8;
+      --ink: #1f2937;
+      --muted: #5b6472;
+      --line: #d6c7ae;
+      --accent: #8f3b1b;
+      --accent-soft: #f5e0d4;
+    }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background: linear-gradient(180deg, #efe4d4 0%, #f8f4ec 100%);
+      color: var(--ink);
+    }
+    .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+    .hero {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 24px;
+      box-shadow: 0 14px 40px rgba(78, 56, 24, 0.08);
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 38px;
+      color: var(--accent);
+    }
+    p {
+      margin: 0;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    .card {
+      margin-top: 24px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 18px;
+      overflow: auto;
+      box-shadow: 0 10px 30px rgba(78, 56, 24, 0.06);
+    }
+    .legend {
+      margin-top: 18px;
+      padding: 14px 16px;
+      background: var(--accent-soft);
+      border-left: 4px solid var(--accent);
+      line-height: 1.6;
+    }
+    code {
+      background: rgba(143, 59, 27, 0.09);
+      padding: 1px 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Overstock Master Deep Flow</h1>
+      <p>This is the giant end-to-end map of the live Overstock runtime: user actions, routes, Python processing, SQL tables, duplicate staging, logging, and export outputs.</p>
+      <div class="legend">
+        Read it left to right as one pipeline: launcher -> FastAPI -> upload processing / SQL steps -> SQL tables -> exports.
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="mermaid">
+flowchart TD
+    A["User"] --> B["start_overstock_app.bat"]
+    B --> C["FastAPI app in app/main.py"]
+    C --> D["settings from app_runtime.env"]
+    C --> E["templates/index.html UI"]
+    C --> F["build_services()"]
+    F --> G["load_overstock_profile()"]
+    G --> H["companies/overstock/company.json"]
+    G --> I["companies/overstock/step_01.json"]
+    G --> J["companies/overstock/step_02.json"]
+    G --> K["companies/overstock/step_03.json"]
+    F --> L["WorkflowOrchestrator"]
+    F --> M["SQLServerRepository"]
+    M --> N["SQL Server database overstockDBc"]
+    M --> O["ensure_database()"]
+
+    E --> P["Route: /process/step-01"]
+    P --> Q["InquiryProcessor in app/workflow.py"]
+    Q --> R["Normalize column names"]
+    Q --> S["Map aliases"]
+    Q --> T["Validate required columns"]
+    Q --> U["Add Ndatee / pay_day / Cclaim"]
+    U --> V["output/STEP_01_NORMALIZED_INQUIRY.xlsx"]
+    U --> W["SQL table step_01_inquiry_rows"]
+
+    E --> BL["Route: /process/step-08-database-optimization"]
+    BL --> BM["step_08_DataBaseOptimization"]
+
+    E --> BN["Route: /process/deductions-summary"]
+    BN --> BO["Build Deductions_Summary"]
+
+    E --> BP["Route: /process/step-06d02-applying-cr-update"]
+    BP --> BQ["Apply CR update SQL"]
+
+    E --> BR["Route: /process/step-07a-summary"]
+    BR --> BS["Summary SQL"]
+    BS --> BT["Deduction breakdown table"]
+    BS --> BU["Gross / deduction / net summary table"]
+    BS --> BV["PO status summary table"]
+
+    E --> BW["Route: /process/step-07"]
+    BW --> BX["Credit applied SQL"]
+    BX --> BY["step_07_Credit_Applied_Sheet"]
+
+    C --> CD["append_history_event()"]
+    CD --> CE["edit log/ai edit history.txt"]
+
+
+    C --> CI["Render logs and status back to UI"]
+      </div>
+    </section>
+  </div>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: "base" });
+  </script>
+</body>
+</html>

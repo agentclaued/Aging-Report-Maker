@@ -1,0 +1,328 @@
+MOVE WALMARTSUMMARY TO THE OFFICE PC (manual steps)
+=====================================================
+Everything is manual: copy files, run the commands below, check, fix. Sections:
+  A  Facts and addresses                 H  Tools hub portal card (tools.json)
+  B  Copy the files                      I  Updating the app later
+  C  Python and packages                 J  schtasks command reference
+  D  Firewall                            K  Debugging commands (A to Z)
+  E  Test run by hand                    L  Troubleshooting table
+  F  Auto-start options (11/22/33/55/66) M  What was changed in main.py
+  G  Option 66 in detail                 N  What is in App Control Center (every file)
+                                         O  What the .ps1 files do
+                                         P  Remove / roll back
+
+-----------------------------------------------------------------
+A. FACTS AND ADDRESSES
+-----------------------------------------------------------------
+Office PC IP ............ 192.168.2.14
+Tools hub portal ........ http://192.168.2.14:8500   (folder C:\Repos\tools_hub)
+This app ................ http://192.168.2.14:8507   (port 8507; 8500-8506 belong to the other tools)
+App folder (office PC) .. C:\Repos\walmart_Ageing_Office pc_Ans
+Source folder (dev PC) .. D:\WalMartDashBoard v2 Claude\Ready to deploy
+Copy for office PC ...... ...\Ready to deploy\Office pc   (its app_runtime.env: HOST=0.0.0.0, PORT=8507)
+Health address .......... http://localhost:8507/_stcore/health  (the portal uses it for the Online/Offline pill)
+Server log .............. C:\Repos\walmart_Ageing_Office pc_Ans\logs\server.log   (hidden modes 11/33/55)
+Scheduled task (66) ..... Tools-walmart_summary
+Scheduled task (55) ..... WalMartSummary_BootRecovery      (22: WalMartSummary_Boot)
+
+-----------------------------------------------------------------
+B. COPY THE FILES
+-----------------------------------------------------------------
+Copy the CONTENTS of the "Office pc" folder into C:\Repos\walmart_Ageing_Office pc_Ans so these sit directly inside it:
+  app, companies, templates, Docs, App Control Center, app_runtime.env, requirements.txt, schema.sql, README.md,
+  start_wallmartsummary_app.bat, stop_wallmartsummary_app.bat, stop_wallmartsummary_app.ps1
+Check:   dir "C:\Repos\walmart_Ageing_Office pc_Ans"
+(If you only see one folder such as "Office pc", move its contents up one level.)
+Never copy: output, logs, venv, *.bak (these belong to each PC).
+
+-----------------------------------------------------------------
+C. PYTHON AND PACKAGES
+-----------------------------------------------------------------
+  python --version                                   (3.12 or 3.13 works)
+  cd /d "C:\Repos\walmart_Ageing_Office pc_Ans"
+  python -m pip install -r requirements.txt
+Option 66 creates its own venv and installs the packages there:
+  python -m venv "C:\Repos\walmart_Ageing_Office pc_Ans\venv"
+  "C:\Repos\walmart_Ageing_Office pc_Ans\venv\Scripts\python.exe" -m pip install -r requirements.txt
+List installed packages:   venv\Scripts\python.exe -m pip list
+pyodbc is in the list but the file reports do not use SQL (no ODBC driver needed).
+
+-----------------------------------------------------------------
+D. FIREWALL (Admin Command Prompt, once)
+-----------------------------------------------------------------
+  netsh advfirewall firewall add rule name="WalMartSummary 8507" dir=in action=allow protocol=TCP localport=8507 profile=domain,private
+Show the rule:     netsh advfirewall firewall show rule name="WalMartSummary 8507"
+Delete the rule:   netsh advfirewall firewall delete rule name="WalMartSummary 8507"
+
+-----------------------------------------------------------------
+E. TEST RUN BY HAND
+-----------------------------------------------------------------
+Use a NEW Command Prompt (not the window of another tool such as streamlit.exe):
+  cd /d "C:\Repos\walmart_Ageing_Office pc_Ans"
+  python -m uvicorn app.main:app --host 0.0.0.0 --port 8507
+Expect:  Uvicorn running on http://0.0.0.0:8507
+Open http://192.168.2.14:8507 .  Stop with Ctrl+C.  Errors appear on screen, which is the best first debug step.
+
+-----------------------------------------------------------------
+F. AUTO-START OPTIONS (only ONE may own port 8507)
+-----------------------------------------------------------------
+Files are in  C:\Repos\walmart_Ageing_Office pc_Ans\App Control Center
+  00 1 / 00 2   Start / Stop in a visible terminal (no reload)
+  11 1 / 11 2   Start / Stop hidden with tray icon (icon shows only while the URL answers;
+                menu: Open app, Restart server, Open log folder, Stop the app)
+  22 1 / 22 2   Install / UnInstall boot task, hidden, NO recovery (task WalMartSummary_Boot)
+  33 1 / 33 2   Install / Remove login auto-start, tray, restarts on crash
+  44 1 / 44 2   Dev mode with --reload / Stop
+  55 1 / 55 2   Install / UnInstall start at PC start and restart, hidden, WITH recovery (task WalMartSummary_BootRecovery)
+  66 1 / 66 2   Install / UnInstall console-window task like the other hub tools (task Tools-walmart_summary)
+Before installing one, stop the others: 11 2, 22 2, 33 2, 55 2, 66 2.
+Installing 55 removes the 22 task and the 33 shortcut automatically.
+
+-----------------------------------------------------------------
+G. OPTION 66 IN DETAIL (the one used on the office PC)
+-----------------------------------------------------------------
+Install (Admin Command Prompt, shows errors on screen):
+  powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Repos\walmart_Ageing_Office pc_Ans\App Control Center\window_autostart.ps1" -Action Install
+  - creates venv if missing, installs requirements.txt into it
+  - asks for the Windows password of the account that will run the task (needed to run at boot before login).
+    No password on the account = the task cannot be created.
+  - creates task Tools-walmart_summary with 3 triggers:
+        at PC startup (45 s delay)  |  at every logon  |  repeats every 10 minutes
+    plus: StartWhenAvailable, MultipleInstances IgnoreNew (a 2nd copy is ignored while one runs),
+    restart on failure (999 times, 1 min apart)
+  - the task runs: cmd /k with a loop that starts uvicorn again 5 seconds after it stops
+  - so after boot, restart, crash, or a closed window the app is back within 10 minutes
+Uninstall:
+  powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Repos\walmart_Ageing_Office pc_Ans\App Control Center\window_autostart.ps1" -Action Remove
+Start now:   schtasks /Run /TN Tools-walmart_summary
+Verify:      schtasks /Query /TN Tools-walmart_summary
+             netstat -ano | findstr :8507
+             curl http://localhost:8507/_stcore/health
+A visible window only appears if that user is logged in. Without it the app still runs;
+use netstat / curl / the browser to verify.
+
+-----------------------------------------------------------------
+H. TOOLS HUB PORTAL CARD (C:\Repos\tools_hub\tools.json)
+-----------------------------------------------------------------
+The portal (portal\app.py) re-reads tools.json on every page load (no restart needed) and checks Online with
+http://localhost:<port>/_stcore/health.  Add this entry (comma after the previous entry, NO comma after the last):
+
+  {
+    "id": "walmart_summary",
+    "name": "Wal Mart Summary",
+    "description": "Upload a Wal Mart, Amazon or Regular Accounts file, or a Full Ageing workbook, and download the status report.",
+    "port": 8507,
+    "status": "live",
+    "departments": ["ar"]
+  }
+
+Do NOT add repo/folder/app: auto_update.ps1 and deploy_to_server.ps1 use them to clone/update Git repos.
+JSON has no comments; use an unused key such as "_comment": "..." if you need a note.
+Edit:       notepad C:\Repos\tools_hub\tools.json      (open as Administrator)
+Validate:   python -c "import json;json.load(open(r'C:\Repos\tools_hub\tools.json',encoding='utf-8'));print('valid')"
+Is it in?   findstr walmart_summary C:\Repos\tools_hub\tools.json
+Refresh:    Ctrl+F5 in the browser. Check "All tools" (count goes up) and the AR department.
+Note: auto_update.ps1 pulls the hub "live" branch every 5 minutes; a local-only edit can be overwritten.
+For a permanent change commit it in the tools_hub repo and push to live (your decision).
+
+-----------------------------------------------------------------
+I. UPDATING THE APP LATER
+-----------------------------------------------------------------
+1. Edit in the source folder (backup first: file.YYYY-MM-DD.bak) and add a note to "edit log\ai edit history.txt".
+2. Copy the same changed file into "Office pc" (keep in sync) and then to C:\Repos\walmart_Ageing_Office pc_Ans on the office PC.
+3. Restart the app so Python reloads it:
+     66:     close the console window, then  schtasks /Run /TN Tools-walmart_summary   (or wait up to 10 minutes)
+     11/55:  tray icon > Restart server,  or  11 2 OFF  then  11 1 ON
+     by hand: Ctrl+C, run the uvicorn command again
+4. Verify:  curl http://localhost:8507/_stcore/health
+Which file for which change:
+     routes, forms, downloads ......... app\main.py
+     Wal Mart report .................. app\adapters\wallmart_python_processor.py
+     Amazon report .................... app\adapters\amazon_file_processor.py
+     Full Ageing reader ............... app\adapters\full_ageing_source.py
+     Regular Accounts ................. app\adapters\regular_accounts_processor.py
+     screens and wording .............. templates\index.html
+     host and port .................... app_runtime.env
+     tray icon app .................... App Control Center\background_tray.pyw
+
+-----------------------------------------------------------------
+J. SCHTASKS COMMAND REFERENCE (Admin Command Prompt)
+-----------------------------------------------------------------
+List tasks of this setup:        schtasks /Query /FO TABLE | findstr /I "Tools- WalMart"
+Show one task (short):           schtasks /Query /TN Tools-walmart_summary
+Show one task (everything):      schtasks /Query /TN Tools-walmart_summary /V /FO LIST
+Only key lines:                  schtasks /Query /TN Tools-walmart_summary /V /FO LIST | findstr /I "Status Last Result Run As Next Run Task To Run"
+Task as XML (triggers/settings): schtasks /Query /TN Tools-walmart_summary /XML
+Run now:                         schtasks /Run /TN Tools-walmart_summary
+Stop the running task:           schtasks /End /TN Tools-walmart_summary
+Disable (keeps it):              schtasks /Change /TN Tools-walmart_summary /DISABLE
+Enable again:                    schtasks /Change /TN Tools-walmart_summary /ENABLE
+Delete:                          schtasks /Delete /TN Tools-walmart_summary /F
+Other tasks of this setup:       WalMartSummary_BootRecovery (55), WalMartSummary_Boot (22), Tools-portal, Tools-AutoUpdate (hub)
+Restart the portal:              schtasks /End /TN Tools-portal   then   schtasks /Run /TN Tools-portal
+"Last Result" codes:
+     0x0 = success             0x1 = the command failed      0x41301 = task is running now
+     0x41303 = not run yet     0x80070005 = access denied    0x8007052E = wrong password    0x2 = file not found (check paths)
+Task Scheduler window:  taskschd.msc  (Task Scheduler Library > Tools-walmart_summary > History tab; enable "Enable All Tasks History")
+PowerShell equivalents:
+     Get-ScheduledTask -TaskName Tools-walmart_summary | Get-ScheduledTaskInfo
+     Get-ScheduledTask -TaskName Tools-walmart_summary | Select -Expand Triggers
+
+-----------------------------------------------------------------
+K. DEBUGGING COMMANDS (A to Z)
+-----------------------------------------------------------------
+Is it running?
+  netstat -ano | findstr :8507                      blank = nothing listens
+  tasklist /FI "PID eq <PID>"                       which program owns that PID
+  tasklist | findstr /I "python uvicorn pythonw"
+  wmic process where "name='python.exe' or name='pythonw.exe'" get ProcessId,ExecutablePath,CommandLine
+Does it answer?
+  curl http://localhost:8507/_stcore/health         expect {"status":"ok",...}
+  curl http://localhost:8507/health                 same
+  curl -I http://192.168.2.14:8507/                 from another PC: tests firewall + network
+  ping 192.168.2.14
+Logs
+  type "C:\Repos\walmart_Ageing_Office pc_Ans\logs\server.log"
+  powershell -c "Get-Content 'C:\Repos\walmart_Ageing_Office pc_Ans\logs\server.log' -Tail 50 -Wait"      (live view, Ctrl+C to leave)
+  findstr /I "error traceback" "C:\Repos\walmart_Ageing_Office pc_Ans\logs\server.log"
+Stop things
+  taskkill /PID <PID> /F                            kill one process
+  taskkill /PID <PID> /T /F                         kill it and its children
+  App Control Center\11 2 OFF - Stop in background.bat      (kills this folder's tray + server only)
+Python / packages
+  python --version
+  where python
+  venv\Scripts\python.exe -m pip list
+  venv\Scripts\python.exe -c "import fastapi, uvicorn, pandas, openpyxl; print('imports ok')"
+  venv\Scripts\python.exe -c "import app.main; print('app ok')"          (run inside the app folder)
+Files
+  dir "C:\Repos\walmart_Ageing_Office pc_Ans"
+  findstr "_stcore" "C:\Repos\walmart_Ageing_Office pc_Ans\app\main.py"            (health route present?)
+  findstr /C:"taskAction" "C:\Repos\walmart_Ageing_Office pc_Ans\App Control Center\window_autostart.ps1"     (fixed script present? 2 lines)
+  findstr walmart_summary C:\Repos\tools_hub\tools.json
+  type "C:\Repos\walmart_Ageing_Office pc_Ans\app_runtime.env"
+Check a bat file for the BOM problem (first bytes must be 64 101 99 = "@ec"; 239 187 191 = BOM = bad):
+  powershell -c "[System.IO.File]::ReadAllBytes('C:\Repos\walmart_Ageing_Office pc_Ans\App Control Center\11 1 ON - Start in background.bat')[0..2]"
+Check a ps1 for syntax errors:
+  powershell -c "$e=$null;[void][System.Management.Automation.Language.Parser]::ParseFile('C:\Repos\walmart_Ageing_Office pc_Ans\App Control Center\window_autostart.ps1',[ref]$null,[ref]$e);if($e){$e|%{$_.Message}}else{'syntax ok'}"
+Firewall
+  netsh advfirewall firewall show rule name="WalMartSummary 8507"
+Run the 66 command by hand (what the task does):
+  cd /d "C:\Repos\walmart_Ageing_Office pc_Ans"
+  "C:\Repos\walmart_Ageing_Office pc_Ans\venv\Scripts\python.exe" -m uvicorn app.main:app --host 0.0.0.0 --port 8507
+Startup items
+  dir "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"      (33: WalMartSummary.lnk; 22 tray shortcut: WalMartSummary (tray).lnk)
+Hub
+  curl http://localhost:8500/            portal answers?
+  type C:\Repos\tools_hub\tools.json     see what the portal reads
+
+-----------------------------------------------------------------
+L. TROUBLESHOOTING TABLE
+-----------------------------------------------------------------
+Symptom ............................ Cause / fix
+netstat shows nothing .............. App not running. Run the uvicorn command by hand (section E) and read the error.
+No module named ... ................ python -m pip install -r requirements.txt (66: use venv\Scripts\python.exe -m pip ...).
+Could not import module "app.main" . Files one folder too deep: app\ and app_runtime.env must be directly in the app folder.
+Works locally, not from other PCs .. Firewall rule (section D) and HOST=0.0.0.0 in app_runtime.env.
+Another window says streamlit.exe .. That is a different tool (8502, 8503 ...). Wal Mart is its own process.
+Portal has no Wal Mart card ........ Entry missing in C:\Repos\tools_hub\tools.json (findstr), invalid JSON, or overwritten by auto_update.
+Card says Offline, app opens ....... /_stcore/health missing: copy the new app\main.py and restart the app (curl must return 200).
+11 says "started" but nothing runs . Old tray process holds the one-instance lock: run 11 2 OFF first.
+Odd characters before @echo off .... BOM in the bat file. Re-save as UTF-8 without BOM.
+MSFT_TaskExecAction not valid ...... Old ps1 ($action clashed with -Action). Use the fixed scripts ($taskAction).
+schtasks: cannot find the file ..... Task never created. Run window_autostart.ps1 -Action Install by hand and read the red text.
+Task exists, nothing runs .......... schtasks /Query ... /V /FO LIST | findstr "Last Result"; run the command by hand (section G) to see the error.
+Wrong or empty Windows password .... Task cannot be registered or fails with 0x8007052E. No password on the account: use 55 or 33 instead.
+Port already in use ................ netstat -ano | findstr :8507 > taskkill /PID <PID> /F; stop other start modes (11/22/33/55/66).
+Console window (66) not visible .... The task user must be logged in at the PC. The app still runs.
+Amazon: no valid Date in CR rows ... Existing rule: the file needs CR rows with valid dates.
+Full Ageing: no header row ......... Header with Acct and Ref Type must be within the first 15 rows.
+Full Ageing: no rows for Acct ...... Wrong account codes ticked or none in the file.
+Report missing column .............. The message names the column; fix the file's column name.
+Report cannot be downloaded twice .. By design: generated reports are deleted after download. Run the report again.
+
+-----------------------------------------------------------------
+M. WHAT WAS CHANGED IN app\main.py (and where)
+-----------------------------------------------------------------
+1. _delete_file_after_download(path)   NEW helper (near _mark_amazon_download_complete).
+   Deletes a generated report from output\ after the browser finished downloading it.
+   Used as a Starlette BackgroundTask on: the Wal Mart status workbook response, the Amazon workbook
+   (inline and /download/amazon-account-sheets), and the Regular Accounts per-person report response.
+   NOT applied to: /download/step-01, /download/step-01a, /download/latest-tables (re-download buttons).
+2. _amazon_download_done(path, download_token)   NEW: marks the Amazon download job complete, then deletes the file.
+3. process_step_01() and _run_step_01_flow() get a new parameter  amazon_accounts: list[str]
+   (form field "amazon_accounts" from the three checkboxes). It is passed to
+   AmazonAccountSheetProcessor(...).process(inquiry_path, company_output_dir, amazon_accounts).
+4. @app.get("/_stcore/health")   NEW alias placed on the /health function, so the hub portal sees the app as Online.
+Related files changed for the same features:
+   app\adapters\full_ageing_source.py          NEW: reads sheet "Full Ageing", finds the header row (Acct + Ref Type, first 15 rows), filters Acct.
+   app\adapters\wallmart_python_processor.py   _read_source(): if the workbook has a Full Ageing sheet, use its rows for
+                                               WC9085, WA9085, SA9200, WM9263; otherwise old behaviour.
+   app\adapters\amazon_file_processor.py       process(file, out, accounts=None): Full Ageing rows for the ticked accounts
+                                               (default AM9285, AM9286; ME9145 optional); otherwise old behaviour.
+   templates\index.html                        Amazon upload box: fieldset with 3 checkboxes (AM9285, AM9286 checked; ME9145 unchecked).
+How to find the changes:   findstr /N "_delete_file_after_download _amazon_download_done amazon_accounts _stcore" app\main.py
+
+-----------------------------------------------------------------
+N. WHAT IS IN "App Control Center" (every file)
+-----------------------------------------------------------------
+The folder sits ONE level below the project root, so every root lookup uses ".." (bat: %~dp0..  ps1: Join-Path $PSScriptRoot '..'  pyw: parents[1]).
+Bat files must be saved WITHOUT a UTF-8 BOM.
+ 00 1 ON - Start in terminal.bat ......... stops the background app, starts a tray in --attach mode, runs uvicorn visibly (no reload)
+ 00 2 OFF - Stop in terminal.bat ......... runs stop_background.ps1
+ 11 1 ON - Start in background.bat ....... starts background_tray.pyw with pythonw (hidden server + tray icon)
+ 11 2 OFF - Stop in background.bat ....... runs stop_background.ps1
+ 22 1 ON - Install Auto-start at PC boot (no recovery).bat       asks for admin, runs boot_autostart.ps1 -Action Install
+ 22 2 OFF - UnInstall Auto-start at PC boot (no recovery).bat    removes that task
+ 33 1 ON - Auto-start at login (tray, recovery).bat   Startup-folder shortcut for background_tray.pyw; installs packages if missing
+ 33 2 OFF - Remove login auto-start.bat .. removes the shortcut
+ 44 1 ON - Dev mode (reload).bat ......... runs start_wallmartsummary_app.bat (uvicorn --reload), tray attach, restores background app afterwards
+ 44 2 OFF - Stop dev mode.bat ............ stops it
+ 55 1 ON - Install Auto-start on PC restart (with recovery).bat    asks for admin, runs boot_recovery_autostart.ps1
+ 55 2 OFF - UnInstall Auto-start on PC restart (with recovery).bat
+ 66 1 ON - Install Auto-start with console window (like other tools).bat    asks for admin, runs window_autostart.ps1
+ 66 2 OFF - UnInstall Auto-start with console window.bat
+ background_tray.pyw ..... tray app. One instance only (named mutex). Starts/supervises uvicorn (restart on crash) or, with --attach, only watches.
+                           Icon is visible only while HOST:PORT answers. Menu: Open app, Restart server, Open log folder, Stop the app.
+                           Reads HOST/PORT from app_runtime.env. Log: logs\server.log. Needs pystray + pillow.
+ stop_background.ps1 ..... kills this folder's tray app and the app.main:app server on the configured port; other apps are untouched
+ boot_autostart.ps1 ...... task WalMartSummary_Boot (22)
+ boot_recovery_autostart.ps1   task WalMartSummary_BootRecovery (55)
+ window_autostart.ps1 .... task Tools-walmart_summary (66)
+ README.txt .............. one-page map of the numbered files
+ streamlit_page\Wal_Mart_Summary.py   (dev PC only) optional Streamlit page that embeds the app in an iframe; not needed with the hub card
+ _backups\ ............... old copies (dev PC only)
+
+-----------------------------------------------------------------
+O. WHAT THE .ps1 FILES DO (and what was fixed)
+-----------------------------------------------------------------
+stop_background.ps1
+   $projectRoot = parent of the control folder; reads PORT from app_runtime.env (default 8040).
+   1) taskkill /T /F on any process whose command line contains this folder's background_tray.pyw.
+   2) finds the listener on the port and kills it only when it (or a parent, up to 4 levels) is the "app.main:app" uvicorn.
+boot_autostart.ps1 (22)
+   param -Action Install|Remove. Task WalMartSummary_Boot as SYSTEM at startup (45 s delay), hidden, no restart on failure,
+   removes the login shortcut, adds a tray-only (--attach) shortcut at login.
+boot_recovery_autostart.ps1 (55)
+   Task WalMartSummary_BootRecovery as SYSTEM at startup (45 s), restarts every 1 min on failure (999 times);
+   removes the 22 task and the 33 shortcut so only one starter exists.
+window_autostart.ps1 (66)
+   Creates venv + installs packages, asks for the Windows password, task Tools-walmart_summary as that user with triggers
+   startup (45 s) + logon + every 10 minutes, StartWhenAvailable, IgnoreNew, restart on failure;
+   command = cmd /k with a uvicorn restart loop.
+Fixes applied to all three install scripts:
+   - variable $action renamed to $taskAction (PowerShell variables are case-insensitive, so $action clashed with the -Action
+     parameter and caused "MSFT_TaskExecAction is not a valid value for the Action variable").
+   - root path is now one level up (..), not two.
+Change the 66 repeat interval:  in window_autostart.ps1 edit  -RepetitionInterval (New-TimeSpan -Minutes 10)  then re-run the installer.
+Change the port or host: edit app_runtime.env (HOST, PORT), re-run the installer if the port changed, add the new firewall rule, update tools.json.
+
+-----------------------------------------------------------------
+P. REMOVE / ROLL BACK
+-----------------------------------------------------------------
+  66:  App Control Center\66 2 OFF ...bat      or   schtasks /Delete /TN Tools-walmart_summary /F
+  55:  55 2 OFF ...bat     22: 22 2 OFF ...bat     33: 33 2 OFF ...bat
+  Stop the running app:  11 2 OFF ...bat   or   taskkill /PID <PID from netstat> /F
+  Portal card: delete the walmart_summary block from tools.json (fix commas, validate the JSON again).
+  Firewall: netsh advfirewall firewall delete rule name="WalMartSummary 8507"
+  Restore a file: copy its .bak back over it (backups exist only on the dev PC).

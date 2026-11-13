@@ -1,0 +1,11 @@
+{
+  "column_aliases": {
+    "order": ["order"],
+    "current": ["current"],
+    "col_1_30_days": ["col_1_30_days"],
+    "col_31_60_days": ["col_31_60_days"],
+    "col_61_90_days": ["col_61_90_days"],
+    "over_90_days": ["over_90_days"]
+  },
+  "required_columns": ["ref", "order"]
+}

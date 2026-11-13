@@ -1,0 +1,49 @@
+flowchart TD
+    A["User"] --> B["start_overstock_app.bat"]
+    B --> C["FastAPI app in app/main.py"]
+    C --> D["settings from app_runtime.env"]
+    C --> E["templates/index.html UI"]
+    C --> F["build_services()"]
+    F --> G["load_overstock_profile()"]
+    G --> H["companies/overstock/company.json"]
+    G --> I["companies/overstock/step_01.json"]
+    G --> J["companies/overstock/step_02.json"]
+    G --> K["companies/overstock/step_03.json"]
+    F --> L["WorkflowOrchestrator"]
+    F --> M["SQLServerRepository"]
+    M --> N["SQL Server database overstockDBc"]
+    M --> O["ensure_database()"]
+
+    E --> P["Route: /process/step-01"]
+    P --> Q["InquiryProcessor in app/workflow.py"]
+    Q --> R["Normalize column names"]
+    Q --> S["Map aliases"]
+    Q --> T["Validate required columns"]
+    Q --> U["Add Ndatee / pay_day / Cclaim"]
+    U --> V["output/STEP_01_NORMALIZED_INQUIRY.xlsx"]
+    U --> W["SQL table step_01_inquiry_rows"]
+
+    E --> BL["Route: /process/step-08-database-optimization"]
+    BL --> BM["step_08_DataBaseOptimization"]
+
+    E --> BN["Route: /process/deductions-summary"]
+    BN --> BO["Build Deductions_Summary"]
+
+    E --> BP["Route: /process/step-06d02-applying-cr-update"]
+    BP --> BQ["Apply CR update SQL"]
+
+    E --> BR["Route: /process/step-07a-summary"]
+    BR --> BS["Summary SQL"]
+    BS --> BT["Deduction breakdown table"]
+    BS --> BU["Gross / deduction / net summary table"]
+    BS --> BV["PO status summary table"]
+
+    E --> BW["Route: /process/step-07"]
+    BW --> BX["Credit applied SQL"]
+    BX --> BY["step_07_Credit_Applied_Sheet"]
+
+    C --> CD["append_history_event()"]
+    CD --> CE["edit log/ai edit history.txt"]
+
+
+    C --> CI["Render logs and status back to UI"]

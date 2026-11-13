@@ -1,0 +1,27 @@
+{
+  "sheet_aliases": {
+    "remittance_payments": ["Remittance payments"]
+  },
+  "skiprows": {
+    "remittance_payments": 0
+  },
+  "detail_column_aliases": {
+    "invoice_number": ["invoice_number"],
+    "keyrec_number": ["keyrec_number", "keyrec_no", "keyrec"],
+    "doc_type": ["doc_type", "document_type"],
+    "transaction_value": ["transaction_value", "payment_amount", "amount_paid", "total"],
+    "cash_discount_amount": ["cash_discount_amount", "cash_discount", "discount_amount"],
+    "clearing_document_number": ["clearing_document_number", "clearing_document_no", "clearing_doc_number"],
+    "payment_chargeback_date": ["payment_chargeback_date", "chargeback_date"],
+    "comments": ["comments", "comment", "description"],
+    "reason_code": ["reason_code", "reason"],
+    "sap_company_code": ["sap_company_code", "company_code"],
+    "po_number": ["po_number", "retail_order"],
+    "reference_check_number": ["reference_check_number", "check_number", "reference_number"],
+    "invoice_date": ["invoice_date"],
+    "posting_date": ["posting_date"],
+    "payment_number": ["payment_number"]
+  },
+  "required_columns": ["invoice_number", "payment_number"],
+  "sheet_match_columns": ["invoice_number", "payment_number", "po_number", "posting_date"]
+}

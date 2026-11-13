@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overstock Staff User Flow</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #f7f4ed;
+      --panel: #fffefa;
+      --ink: #22303d;
+      --muted: #5c6774;
+      --line: #d8cfbf;
+      --accent: #8a3d16;
+      --accent-soft: #fff4ea;
+    }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background: linear-gradient(180deg, #efe7db 0%, var(--bg) 100%);
+      color: var(--ink);
+    }
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 30px 20px 56px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 34px rgba(72, 57, 31, 0.06);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 38px;
+      color: var(--accent);
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 26px;
+      color: #214b68;
+    }
+    p, li {
+      line-height: 1.7;
+      color: var(--muted);
+    }
+    ul {
+      padding-left: 22px;
+    }
+    code {
+      background: rgba(138, 61, 22, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .diagram {
+      overflow: auto;
+      padding-top: 8px;
+    }
+    .note {
+      padding: 14px 16px;
+      background: var(--accent-soft);
+      border-left: 4px solid var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel">
+      <h1>Overstock Staff User Flow</h1>
+      <p>This is the simple HTML version for staff and non-technical users. It shows what the app is for, what each step means, and where the final results go.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Purpose</h2>
+      <p>The app helps turn Overstock inquiry, invoice, and payment files into matched reports.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Simple Workflow</h2>
+      <div class="diagram mermaid">
+flowchart TD
+    A["Open the Overstock app"] --> B["Upload inquiry file"]
+    B --> D["Upload invoice workbooks"]
+    D --> E["Upload payment detail workbooks"]
+    E --> F["Run matching steps"]
+    F --> G["Run summary and credit steps"]
+    G --> H["Download final report files"]
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>What Each Step Means</h2>
+      <ul>
+        <li><code>Step 01</code>: loads the inquiry file and prepares it for the system.</li>
+        <li><code>Step 02</code>: combines invoice workbooks into one clean invoice dataset.</li>
+        <li><code>Step 03</code>: combines payment detail workbooks into one clean payment dataset.</li>
+        <li><code>Step 06</code>: handles credit note, debit number, unapplied credit, and deduction logic.</li>
+        <li><code>Step 07A</code>: builds summary reports.</li>
+        <li><code>Step 07</code>: builds the final credit applied result.</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>Main Folders Staff Should Know</h2>
+      <ul>
+        <li><code>output/</code>: final generated files are saved here.</li>
+        <li><code>duplicate_staging/</code>: temporary holding area when the app finds the same file name again.</li>
+        <li><code>templates/</code>: the app screen layout lives here.</li>
+        <li><code>companies/overstock/</code>: Overstock-specific setup rules live here.</li>
+      </ul>
+      <div class="note">
+        The app takes multiple spreadsheet files, cleans them, checks how they match, applies credit/debit logic, and gives the user finished report files to download.
+      </div>
+    </section>
+  </div>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: "base" });
+  </script>
+</body>
+</html>
+
